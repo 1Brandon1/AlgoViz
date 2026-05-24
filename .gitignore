@@ -1,0 +1,27 @@
+# Maven build output
+target/
+
+# IntelliJ / IDE files
+.idea/
+*.iml
+
+# VSCode files
+.vscode/
+
+# Compiled class files
+*.class
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Java crash dumps
+hs_err_pid*
+
+# Maven wrapper 
+.mvn/
+mvnw
+mvnw.cmd
