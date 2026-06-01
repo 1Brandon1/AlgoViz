@@ -1,5 +1,6 @@
 package com.brandon.ui;
 
+import com.brandon.algorithms.sorting.BubbleSort;
 import com.brandon.models.ArrayModel;
 import com.brandon.visualization.ArrayVisualizer;
 import javafx.geometry.Insets;
@@ -12,6 +13,7 @@ import javafx.scene.layout.StackPane;
 public class MainView extends BorderPane {
 
     private final StackPane visualizationPane;
+    private ArrayModel currentModel;
 
     public MainView() {
 
@@ -24,10 +26,16 @@ public class MainView extends BorderPane {
     private void createLayout() {
 
         Button generateButton = new Button("Generate Array");
+        Button sortButton = new Button("Bubble Sort");
 
         generateButton.setOnAction(e -> generateNewArray());
 
-        HBox topBar = new HBox(generateButton);
+        sortButton.setOnAction(e -> {
+            var events = BubbleSort.generateEvents(currentModel.getValues());
+            System.out.println("Events generated: " + events.size());
+        });
+
+        HBox topBar = new HBox(10, generateButton, sortButton);
 
         topBar.setAlignment(Pos.CENTER_LEFT);
         topBar.setPadding(new Insets(15));
@@ -38,11 +46,11 @@ public class MainView extends BorderPane {
 
     private void generateNewArray() {
 
-        ArrayModel model = new ArrayModel(60);
+    currentModel = new ArrayModel(60);
 
-        ArrayVisualizer visualizer = new ArrayVisualizer(model);
+    ArrayVisualizer visualizer = new ArrayVisualizer(currentModel);
 
-        visualizationPane.getChildren().clear();
-        visualizationPane.getChildren().add(visualizer);
-    }
+    visualizationPane.getChildren().clear();
+    visualizationPane.getChildren().add(visualizer);
+}
 }
