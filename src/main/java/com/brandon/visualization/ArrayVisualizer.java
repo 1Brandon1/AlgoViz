@@ -6,9 +6,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ArrayVisualizer extends HBox {
 
     private static final double BAR_WIDTH = 12;
+
+    private final List<Rectangle> bars = new ArrayList<>();
 
     public ArrayVisualizer(ArrayModel model) {
 
@@ -31,7 +36,23 @@ public class ArrayVisualizer extends HBox {
 
             bar.setFill(Color.CORNFLOWERBLUE);
 
+            bars.add(bar);
             getChildren().add(bar);
+        }
+    }
+
+    public void highlightBars(int firstIndex, int secondIndex) {
+
+        resetColors();
+
+        bars.get(firstIndex).setFill(Color.RED);
+        bars.get(secondIndex).setFill(Color.RED);
+    }
+
+    public void resetColors() {
+
+        for (Rectangle bar : bars) {
+            bar.setFill(Color.CORNFLOWERBLUE);
         }
     }
 }
