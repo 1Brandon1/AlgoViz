@@ -1,4 +1,4 @@
-package com.brandon.visualization;
+package com.brandon.visualisation;
 
 import com.brandon.models.ArrayModel;
 import javafx.geometry.Pos;
@@ -9,13 +9,13 @@ import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArrayVisualizer extends HBox {
+public class ArrayVisualiser extends HBox {
 
     private static final double BAR_WIDTH = 12;
 
     private final List<Rectangle> bars = new ArrayList<>();
 
-    public ArrayVisualizer(ArrayModel model) {
+    public ArrayVisualiser(ArrayModel model) {
 
         setAlignment(Pos.BOTTOM_CENTER);
         setSpacing(2);
@@ -54,5 +54,16 @@ public class ArrayVisualizer extends HBox {
         for (Rectangle bar : bars) {
             bar.setFill(Color.CORNFLOWERBLUE);
         }
+    }
+
+    public void swapBars(int firstIndex, int secondIndex) {
+
+        Rectangle firstBar = bars.get(firstIndex);
+        Rectangle secondBar = bars.get(secondIndex);
+
+        double tempHeight = firstBar.getHeight();
+
+        firstBar.setHeight(secondBar.getHeight());
+        secondBar.setHeight(tempHeight);
     }
 }

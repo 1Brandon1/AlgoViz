@@ -1,7 +1,8 @@
-package com.brandon.visualization;
+package com.brandon.visualisation;
 
 import com.brandon.events.AnimationEvent;
 import com.brandon.events.CompareEvent;
+import com.brandon.events.SwapEvent;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
@@ -12,7 +13,7 @@ public class EventPlayer {
 
     public static void play(
             List<AnimationEvent> events,
-            ArrayVisualizer visualizer
+            ArrayVisualiser visualiser
     ) {
 
         Timeline timeline = new Timeline();
@@ -27,9 +28,16 @@ public class EventPlayer {
 
                         if (event instanceof CompareEvent compare) {
 
-                            visualizer.highlightBars(
+                            visualiser.highlightBars(
                                     compare.getFirstIndex(),
                                     compare.getSecondIndex()
+                            );
+                        }
+                        else if (event instanceof SwapEvent swap) {
+
+                            visualiser.swapBars(
+                                    swap.getFirstIndex(),
+                                    swap.getSecondIndex()
                             );
                         }
                     }
@@ -39,5 +47,6 @@ public class EventPlayer {
         }
 
         timeline.play();
+        timeline.setOnFinished(e -> visualiser.resetColors());
     }
 }

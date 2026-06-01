@@ -13,21 +13,20 @@ public class BubbleSort {
 
         List<AnimationEvent> events = new ArrayList<>();
 
-        int[] copy = array.clone();
 
-        for (int i = 0; i < copy.length - 1; i++) {
+        for (int i = 0; i < array.length - 1; i++) {
 
-            for (int j = 0; j < copy.length - i - 1; j++) {
+            for (int j = 0; j < array.length - i - 1; j++) {
 
                 events.add(new CompareEvent(j, j + 1));
 
-                if (copy[j] > copy[j + 1]) {
+                if (array[j] > array[j + 1]) {
 
                     events.add(new SwapEvent(j, j + 1));
 
-                    int temp = copy[j];
-                    copy[j] = copy[j + 1];
-                    copy[j + 1] = temp;
+                    int temp = array[j];
+                    array[j] = array[j + 1];
+                    array[j + 1] = temp;
                 }
             }
         }

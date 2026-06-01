@@ -2,8 +2,9 @@ package com.brandon.ui;
 
 import com.brandon.algorithms.sorting.BubbleSort;
 import com.brandon.models.ArrayModel;
-import com.brandon.visualization.ArrayVisualizer;
-import com.brandon.visualization.EventPlayer;
+import com.brandon.visualisation.ArrayVisualiser;
+import com.brandon.visualisation.EventPlayer;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -15,7 +16,7 @@ public class MainView extends BorderPane {
 
     private final StackPane visualizationPane;
     private ArrayModel currentModel;
-    private ArrayVisualizer currentVisualizer;
+    private ArrayVisualiser currentVisualiser;
 
     public MainView() {
 
@@ -40,7 +41,7 @@ public class MainView extends BorderPane {
 
             EventPlayer.play(
                     events,
-                    currentVisualizer
+                    currentVisualiser
             );
         });
 
@@ -57,9 +58,9 @@ public class MainView extends BorderPane {
 
         currentModel = new ArrayModel(60);
 
-        currentVisualizer = new ArrayVisualizer(currentModel);
+        currentVisualiser = new ArrayVisualiser(currentModel);
 
         visualizationPane.getChildren().clear();
-        visualizationPane.getChildren().add(currentVisualizer);
+        visualizationPane.getChildren().add(currentVisualiser);
     }
 }
