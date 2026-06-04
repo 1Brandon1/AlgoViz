@@ -90,6 +90,26 @@ public class ArrayVisualiser extends HBox {
         animation.play();
     }
 
+    public void setBarHeight(int index, int value, Runnable onFinished) {
+
+        Rectangle bar = bars.get(index);
+
+        Timeline animation = new Timeline(
+                new KeyFrame(
+                        Duration.millis(100),
+                        new KeyValue(bar.heightProperty(), value)
+                )
+        );
+
+        animation.setOnFinished(e -> {
+            if (onFinished != null) {
+                onFinished.run();
+            }
+        });
+
+        animation.play();
+    }
+
     public void markSorted(int index) {
         bars.get(index).setFill(Color.LIMEGREEN);
     }

@@ -64,6 +64,14 @@ public class EventPlayer {
                     next
             );
 
+        } else if (event instanceof OverwriteEvent overwrite) {
+
+            visualiser.setBarHeight(
+                    overwrite.getIndex(),
+                    overwrite.getNewValue(),
+                    next
+            );
+
         } else {
             next.run();
         }
