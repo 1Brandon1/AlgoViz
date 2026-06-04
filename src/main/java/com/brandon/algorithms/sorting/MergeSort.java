@@ -1,7 +1,10 @@
 package com.brandon.algorithms.sorting;
 
 import com.brandon.algorithms.SortingAlgorithm;
-import com.brandon.events.*;
+import com.brandon.events.AnimationEvent;
+import com.brandon.events.CompareEvent;
+import com.brandon.events.SortedEvent;
+import com.brandon.events.OverwriteEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +19,14 @@ public class MergeSort implements SortingAlgorithm {
 
         mergeSort(copy, 0, copy.length - 1, events);
 
+        for (int i = 0; i < copy.length; i++) {
+            events.add(new SortedEvent(i));
+        }
+
         return events;
     }
 
-    private void mergeSort(int[] arr, int left, int right,
-                           List<AnimationEvent> events) {
+    private void mergeSort(int[] arr, int left, int right, List<AnimationEvent> events) {
 
         if (left >= right) return;
 
@@ -32,12 +38,13 @@ public class MergeSort implements SortingAlgorithm {
         merge(arr, left, mid, right, events);
     }
 
-    private void merge(int[] arr, int left, int mid, int right,
-                       List<AnimationEvent> events) {
+    private void merge(int[] arr, int left, int mid, int right, List<AnimationEvent> events) {
 
         int[] temp = new int[right - left + 1];
 
-        int i = left, j = mid + 1, k = 0;
+        int i = left;
+        int j = mid + 1;
+        int k = 0;
 
         while (i <= mid && j <= right) {
 

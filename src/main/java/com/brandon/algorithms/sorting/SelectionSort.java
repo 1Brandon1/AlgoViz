@@ -3,6 +3,7 @@ package com.brandon.algorithms.sorting;
 import com.brandon.algorithms.SortingAlgorithm;
 import com.brandon.events.AnimationEvent;
 import com.brandon.events.CompareEvent;
+import com.brandon.events.SortedEvent;
 import com.brandon.events.SwapEvent;
 
 import java.util.ArrayList;
@@ -15,15 +16,17 @@ public class SelectionSort implements SortingAlgorithm {
 
         List<AnimationEvent> events = new ArrayList<>();
 
-        for (int i = 0; i < array.length - 1; i++) {
+        int[] copy = array.clone();
+
+        for (int i = 0; i < copy.length - 1; i++) {
 
             int minIndex = i;
 
-            for (int j = i + 1; j < array.length; j++) {
+            for (int j = i + 1; j < copy.length; j++) {
 
                 events.add(new CompareEvent(minIndex, j));
 
-                if (array[j] < array[minIndex]) {
+                if (copy[j] < copy[minIndex]) {
                     minIndex = j;
                 }
             }
@@ -32,11 +35,15 @@ public class SelectionSort implements SortingAlgorithm {
 
                 events.add(new SwapEvent(i, minIndex));
 
-                int temp = array[i];
-                array[i] = array[minIndex];
-                array[minIndex] = temp;
+                int temp = copy[i];
+                copy[i] = copy[minIndex];
+                copy[minIndex] = temp;
             }
+
+            events.add(new SortedEvent(i));
         }
+
+        events.add(new SortedEvent(copy.length - 1));
 
         return events;
     }

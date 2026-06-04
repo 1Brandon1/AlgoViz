@@ -3,6 +3,7 @@ package com.brandon.algorithms.sorting;
 import com.brandon.algorithms.SortingAlgorithm;
 import com.brandon.events.AnimationEvent;
 import com.brandon.events.CompareEvent;
+import com.brandon.events.SortedEvent;
 import com.brandon.events.SwapEvent;
 
 import java.util.ArrayList;
@@ -15,20 +16,26 @@ public class InsertionSort implements SortingAlgorithm {
 
         List<AnimationEvent> events = new ArrayList<>();
 
-        for (int i = 1; i < array.length; i++) {
+        int[] copy = array.clone();
+
+        for (int i = 1; i < copy.length; i++) {
 
             int j = i;
 
-            while (j > 0 && array[j] < array[j - 1]) {
+            while (j > 0 && copy[j] < copy[j - 1]) {
 
                 events.add(new CompareEvent(j, j - 1));
                 events.add(new SwapEvent(j, j - 1));
 
-                int temp = array[j];
-                array[j] = array[j - 1];
-                array[j - 1] = temp;
+                int temp = copy[j];
+                copy[j] = copy[j - 1];
+                copy[j - 1] = temp;
 
                 j--;
+            }
+
+            for (int k = 0; k <= i; k++) {
+                events.add(new SortedEvent(k));
             }
         }
 

@@ -12,15 +12,18 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ArrayVisualiser extends HBox {
 
-    private static final double BAR_WIDTH = 12;
-
-    private Integer pivotIndex = null;
+    private static final double BAR_WIDTH = 20;
 
     private final List<Rectangle> bars = new ArrayList<>();
+
+    private final Set<Integer> sortedIndices = new HashSet<>();
+    private Integer pivotIndex = null;
 
     public ArrayVisualiser(ArrayModel model) {
 
@@ -28,7 +31,12 @@ public class ArrayVisualiser extends HBox {
         setSpacing(2);
 
         drawArray(model);
+        render();
     }
+
+    // -------------------------
+    // INITIAL RENDER
+    // -------------------------
 
     private void drawArray(ArrayModel model) {
 
@@ -40,7 +48,6 @@ public class ArrayVisualiser extends HBox {
 
             bar.setWidth(BAR_WIDTH);
             bar.setHeight(value);
-
             bar.setFill(Color.CORNFLOWERBLUE);
 
             bars.add(bar);
@@ -48,9 +55,37 @@ public class ArrayVisualiser extends HBox {
         }
     }
 
+    // -------------------------
+    // CENTRAL RENDER FUNCTION
+    // -------------------------
+
+    private void render() {
+
+        for (int i = 0; i < bars.size(); i++) {
+
+            Rectangle bar = bars.get(i);
+
+            if (sortedIndices.contains(i)) {
+                bar.setFill(Color.LIMEGREEN);
+                continue;
+            }
+
+            if (pivotIndex != null && i == pivotIndex) {
+                bar.setFill(Color.MEDIUMPURPLE);
+                continue;
+            }
+
+            bar.setFill(Color.CORNFLOWERBLUE);
+        }
+    }
+
+    // -------------------------
+    // VISUAL ACTIONS
+    // -------------------------
+
     public void highlightBars(int firstIndex, int secondIndex, Runnable onFinished) {
 
-        resetColors();
+        render();
 
         bars.get(firstIndex).setFill(Color.ORANGE);
         bars.get(secondIndex).setFill(Color.ORANGE);
@@ -61,17 +96,6 @@ public class ArrayVisualiser extends HBox {
 
         if (onFinished != null) {
             onFinished.run();
-        }
-    }
-
-    public void resetColors() {
-
-        for (Rectangle bar : bars) {
-            bar.setFill(Color.CORNFLOWERBLUE);
-        }
-
-        if (pivotIndex != null) {
-            bars.get(pivotIndex).setFill(Color.MEDIUMPURPLE);
         }
     }
 
@@ -92,9 +116,8 @@ public class ArrayVisualiser extends HBox {
         );
 
         animation.setOnFinished(e -> {
-            if (onFinished != null) {
-                onFinished.run();
-            }
+            render();
+            if (onFinished != null) onFinished.run();
         });
 
         animation.play();
@@ -112,9 +135,8 @@ public class ArrayVisualiser extends HBox {
         );
 
         animation.setOnFinished(e -> {
-            if (onFinished != null) {
-                onFinished.run();
-            }
+            render();
+            if (onFinished != null) onFinished.run();
         });
 
         animation.play();
@@ -123,15 +145,20 @@ public class ArrayVisualiser extends HBox {
     public void highlightPivot(int index, Runnable onFinished) {
 
         pivotIndex = index;
-
-        resetColors();
+        render();
 
         if (onFinished != null) {
             onFinished.run();
         }
     }
 
-    public void markSorted(int index) {
-        bars.get(index).setFill(Color.LIMEGREEN);
+    public void markSorted(int index, Runnable onFinished) {
+
+        sortedIndices.add(index);
+        render();
+
+        if (onFinished != null) {
+            onFinished.run();
+        }
     }
 }

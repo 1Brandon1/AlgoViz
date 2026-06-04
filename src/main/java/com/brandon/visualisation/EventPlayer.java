@@ -18,7 +18,6 @@ public class EventPlayer {
             List<AnimationEvent> events,
             ArrayVisualiser visualiser
     ) {
-
         playNext(events, visualiser, 0);
     }
 
@@ -29,13 +28,11 @@ public class EventPlayer {
     ) {
 
         if (index >= events.size()) {
-            visualiser.resetColors();
             return;
         }
 
         if (controller.isPaused()) {
 
-            // Try again later without blocking UI thread
             Platform.runLater(() ->
                     playNext(events, visualiser, index)
             );
@@ -76,6 +73,13 @@ public class EventPlayer {
 
             visualiser.highlightPivot(
                     pivot.getPivotIndex(),
+                    next
+            );
+
+        } else if (event instanceof SortedEvent sorted) {
+
+            visualiser.markSorted(
+                    sorted.getIndex(),
                     next
             );
 
