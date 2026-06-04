@@ -1,7 +1,6 @@
 package com.brandon.ui;
 
-import com.brandon.algorithms.SortingAlgorithm;
-import com.brandon.algorithms.sorting.BubbleSort;
+import com.brandon.algorithms.*;
 import com.brandon.models.ArrayModel;
 import com.brandon.visualisation.ArrayVisualiser;
 import com.brandon.visualisation.EventPlayer;
@@ -9,6 +8,7 @@ import com.brandon.visualisation.EventPlayer;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -16,8 +16,11 @@ import javafx.scene.layout.StackPane;
 public class MainView extends BorderPane {
 
     private final StackPane visualizationPane;
+
     private ArrayModel currentModel;
     private ArrayVisualiser currentVisualiser;
+
+    private AlgorithmType selectedAlgorithm = AlgorithmType.BUBBLE_SORT;
 
     public MainView() {
 
@@ -30,15 +33,24 @@ public class MainView extends BorderPane {
     private void createLayout() {
 
         Button generateButton = new Button("Generate Array");
-        Button sortButton = new Button("Bubble Sort");
+        Button sortButton = new Button("Run");
+
+        ComboBox<AlgorithmType> algorithmSelector = new ComboBox<>();
+        algorithmSelector.getItems().addAll(AlgorithmType.values());
+        algorithmSelector.setValue(AlgorithmType.BUBBLE_SORT);
+
+        algorithmSelector.setOnAction(e ->
+                selectedAlgorithm = algorithmSelector.getValue()
+        );
 
         generateButton.setOnAction(e -> generateNewArray());
 
         sortButton.setOnAction(e -> {
 
-            SortingAlgorithm algo = new BubbleSort();
-
-            var events = algo.generateEvents(currentModel.getValues());
+            var events = AlgorithmEngine.run(
+                    selectedAlgorithm,
+                    currentModel.getValues()
+            );
 
             EventPlayer.play(
                     events,
@@ -46,7 +58,12 @@ public class MainView extends BorderPane {
             );
         });
 
-        HBox topBar = new HBox(10, generateButton, sortButton);
+        HBox topBar = new HBox(
+                10,
+                generateButton,
+                algorithmSelector,
+                sortButton
+        );
 
         topBar.setAlignment(Pos.CENTER_LEFT);
         topBar.setPadding(new Insets(15));
