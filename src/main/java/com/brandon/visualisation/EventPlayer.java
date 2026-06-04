@@ -72,6 +72,13 @@ public class EventPlayer {
                     next
             );
 
+        } else if (event instanceof PivotEvent pivot) {
+
+            visualiser.highlightPivot(
+                    pivot.getPivotIndex(),
+                    next
+            );
+
         } else {
             next.run();
         }

@@ -18,6 +18,8 @@ public class ArrayVisualiser extends HBox {
 
     private static final double BAR_WIDTH = 12;
 
+    private Integer pivotIndex = null;
+
     private final List<Rectangle> bars = new ArrayList<>();
 
     public ArrayVisualiser(ArrayModel model) {
@@ -46,12 +48,16 @@ public class ArrayVisualiser extends HBox {
         }
     }
 
-    public void highlightBars(int first, int second, Runnable onFinished) {
+    public void highlightBars(int firstIndex, int secondIndex, Runnable onFinished) {
 
         resetColors();
 
-        bars.get(first).setFill(Color.ORANGE);
-        bars.get(second).setFill(Color.ORANGE);
+        bars.get(firstIndex).setFill(Color.ORANGE);
+        bars.get(secondIndex).setFill(Color.ORANGE);
+
+        if (pivotIndex != null) {
+            bars.get(pivotIndex).setFill(Color.MEDIUMPURPLE);
+        }
 
         if (onFinished != null) {
             onFinished.run();
@@ -62,6 +68,10 @@ public class ArrayVisualiser extends HBox {
 
         for (Rectangle bar : bars) {
             bar.setFill(Color.CORNFLOWERBLUE);
+        }
+
+        if (pivotIndex != null) {
+            bars.get(pivotIndex).setFill(Color.MEDIUMPURPLE);
         }
     }
 
@@ -108,6 +118,17 @@ public class ArrayVisualiser extends HBox {
         });
 
         animation.play();
+    }
+
+    public void highlightPivot(int index, Runnable onFinished) {
+
+        pivotIndex = index;
+
+        resetColors();
+
+        if (onFinished != null) {
+            onFinished.run();
+        }
     }
 
     public void markSorted(int index) {
