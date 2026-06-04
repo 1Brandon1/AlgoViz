@@ -1,5 +1,6 @@
 package com.brandon.ui;
 
+import com.brandon.algorithms.SortingAlgorithm;
 import com.brandon.algorithms.sorting.BubbleSort;
 import com.brandon.models.ArrayModel;
 import com.brandon.visualisation.ArrayVisualiser;
@@ -35,9 +36,9 @@ public class MainView extends BorderPane {
 
         sortButton.setOnAction(e -> {
 
-            var events = BubbleSort.generateEvents(
-                    currentModel.getValues()
-            );
+            SortingAlgorithm algo = new BubbleSort();
+
+            var events = algo.generateEvents(currentModel.getValues());
 
             EventPlayer.play(
                     events,
@@ -56,7 +57,7 @@ public class MainView extends BorderPane {
 
     private void generateNewArray() {
 
-        currentModel = new ArrayModel(60);
+        currentModel = new ArrayModel(25);
 
         currentVisualiser = new ArrayVisualiser(currentModel);
 
