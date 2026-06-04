@@ -1,6 +1,11 @@
 package com.brandon.visualisation;
 
 import com.brandon.models.ArrayModel;
+
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -45,8 +50,8 @@ public class ArrayVisualiser extends HBox {
 
         resetColors();
 
-        bars.get(firstIndex).setFill(Color.RED);
-        bars.get(secondIndex).setFill(Color.RED);
+        bars.get(firstIndex).setFill(Color.ORANGE);
+        bars.get(secondIndex).setFill(Color.ORANGE);
     }
 
     public void resetColors() {
@@ -61,9 +66,21 @@ public class ArrayVisualiser extends HBox {
         Rectangle firstBar = bars.get(firstIndex);
         Rectangle secondBar = bars.get(secondIndex);
 
-        double tempHeight = firstBar.getHeight();
+        double firstHeight = firstBar.getHeight();
+        double secondHeight = secondBar.getHeight();
 
-        firstBar.setHeight(secondBar.getHeight());
-        secondBar.setHeight(tempHeight);
+        Timeline animation = new Timeline(
+                new KeyFrame(
+                        Duration.millis(15),
+                        new KeyValue(firstBar.heightProperty(), secondHeight),
+                        new KeyValue(secondBar.heightProperty(), firstHeight)
+                )
+        );
+
+        animation.play();
+    }
+
+    public void markSorted(int index) {
+        bars.get(index).setFill(Color.LIMEGREEN);
     }
 }

@@ -11,6 +11,8 @@ import java.util.List;
 
 public class EventPlayer {
 
+    private static final int EVENT_DELAY_MS = 20;
+
     public static void play(
             List<AnimationEvent> events,
             ArrayVisualiser visualiser
@@ -23,7 +25,7 @@ public class EventPlayer {
             AnimationEvent event = events.get(i);
 
             KeyFrame frame = new KeyFrame(
-                    Duration.millis(i * 20),
+                    Duration.millis(i * EVENT_DELAY_MS),
                     e -> {
 
                         if (event instanceof CompareEvent compare) {
