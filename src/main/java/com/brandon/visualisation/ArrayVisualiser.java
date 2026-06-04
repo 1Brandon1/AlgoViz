@@ -46,12 +46,16 @@ public class ArrayVisualiser extends HBox {
         }
     }
 
-    public void highlightBars(int firstIndex, int secondIndex) {
+    public void highlightBars(int first, int second, Runnable onFinished) {
 
         resetColors();
 
-        bars.get(firstIndex).setFill(Color.ORANGE);
-        bars.get(secondIndex).setFill(Color.ORANGE);
+        bars.get(first).setFill(Color.ORANGE);
+        bars.get(second).setFill(Color.ORANGE);
+
+        if (onFinished != null) {
+            onFinished.run();
+        }
     }
 
     public void resetColors() {
@@ -61,7 +65,7 @@ public class ArrayVisualiser extends HBox {
         }
     }
 
-    public void swapBars(int firstIndex, int secondIndex) {
+    public void swapBars(int firstIndex, int secondIndex, Runnable onFinished) {
 
         Rectangle firstBar = bars.get(firstIndex);
         Rectangle secondBar = bars.get(secondIndex);
@@ -71,11 +75,17 @@ public class ArrayVisualiser extends HBox {
 
         Timeline animation = new Timeline(
                 new KeyFrame(
-                        Duration.millis(15),
+                        Duration.millis(100),
                         new KeyValue(firstBar.heightProperty(), secondHeight),
                         new KeyValue(secondBar.heightProperty(), firstHeight)
                 )
         );
+
+        animation.setOnFinished(e -> {
+            if (onFinished != null) {
+                onFinished.run();
+            }
+        });
 
         animation.play();
     }

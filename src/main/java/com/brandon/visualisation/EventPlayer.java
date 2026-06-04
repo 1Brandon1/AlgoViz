@@ -1,54 +1,57 @@
 package com.brandon.visualisation;
 
-import com.brandon.events.AnimationEvent;
-import com.brandon.events.CompareEvent;
-import com.brandon.events.SwapEvent;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.util.Duration;
+import com.brandon.events.*;
+import javafx.application.Platform;
 
 import java.util.List;
 
 public class EventPlayer {
 
-    private static final int EVENT_DELAY_MS = 20;
+    private static final int DELAY_MS = 20;
 
     public static void play(
             List<AnimationEvent> events,
             ArrayVisualiser visualiser
     ) {
 
-        Timeline timeline = new Timeline();
+        playNext(events, visualiser, 0);
+    }
 
-        for (int i = 0; i < events.size(); i++) {
+    private static void playNext(
+            List<AnimationEvent> events,
+            ArrayVisualiser visualiser,
+            int index
+    ) {
 
-            AnimationEvent event = events.get(i);
-
-            KeyFrame frame = new KeyFrame(
-                    Duration.millis(i * EVENT_DELAY_MS),
-                    e -> {
-
-                        if (event instanceof CompareEvent compare) {
-
-                            visualiser.highlightBars(
-                                    compare.getFirstIndex(),
-                                    compare.getSecondIndex()
-                            );
-                        }
-                        else if (event instanceof SwapEvent swap) {
-
-                            visualiser.swapBars(
-                                    swap.getFirstIndex(),
-                                    swap.getSecondIndex()
-                            );
-                        }
-                    }
-            );
-
-            timeline.getKeyFrames().add(frame);
+        if (index >= events.size()) {
+            visualiser.resetColors();
+            return;
         }
 
-        timeline.play();
-        timeline.setOnFinished(e -> visualiser.resetColors());
+        AnimationEvent event = events.get(index);
+
+        Runnable next = () ->
+                playNext(events, visualiser, index + 1);
+
+        if (event instanceof CompareEvent compare) {
+
+            visualiser.highlightBars(
+                    compare.getFirstIndex(),
+                    compare.getSecondIndex(),
+                    next
+            );
+
+        } else if (event instanceof SwapEvent swap) {
+
+            visualiser.swapBars(
+                    swap.getFirstIndex(),
+                    swap.getSecondIndex(),
+                    next
+            );
+
+        } else {
+
+            next.run();
+        }
     }
 }
