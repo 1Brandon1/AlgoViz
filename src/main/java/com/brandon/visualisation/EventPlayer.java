@@ -1,13 +1,18 @@
 package com.brandon.visualisation;
 
 import com.brandon.events.*;
+
 import javafx.application.Platform;
 
 import java.util.List;
 
 public class EventPlayer {
 
-    private static final int DELAY_MS = 20;
+    private static final PlaybackController controller = new PlaybackController();
+
+    public static PlaybackController getController() {
+        return controller;
+    }
 
     public static void play(
             List<AnimationEvent> events,
@@ -25,6 +30,16 @@ public class EventPlayer {
 
         if (index >= events.size()) {
             visualiser.resetColors();
+            return;
+        }
+
+        if (controller.isPaused()) {
+
+            // Try again later without blocking UI thread
+            Platform.runLater(() ->
+                    playNext(events, visualiser, index)
+            );
+
             return;
         }
 
@@ -50,7 +65,6 @@ public class EventPlayer {
             );
 
         } else {
-
             next.run();
         }
     }

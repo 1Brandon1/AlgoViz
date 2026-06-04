@@ -58,11 +58,20 @@ public class MainView extends BorderPane {
             );
         });
 
+        Button pauseButton = new Button("Pause");
+        Button resumeButton = new Button("Resume"); 
+
+        var controller = EventPlayer.getController();
+        pauseButton.setOnAction(e -> controller.pause());
+        resumeButton.setOnAction(e -> controller.resume());
+
         HBox topBar = new HBox(
-                10,
-                generateButton,
-                algorithmSelector,
-                sortButton
+            10,
+            generateButton,
+            algorithmSelector,
+            sortButton,
+            pauseButton,
+            resumeButton
         );
 
         topBar.setAlignment(Pos.CENTER_LEFT);
