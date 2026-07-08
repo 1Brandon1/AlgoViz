@@ -2,17 +2,44 @@ package com.brandon.visualisation;
 
 public class PlaybackController {
 
-    private boolean paused = false;
+    private int currentIndex = 0;
+
+    private boolean playing = false;
+
+    public int getCurrentIndex() {
+        return currentIndex;
+    }
+
+    public void setCurrentIndex(int currentIndex) {
+        this.currentIndex = currentIndex;
+    }
+
+    public void next() {
+        currentIndex++;
+    }
+
+    public void previous() {
+
+        if (currentIndex > 0) {
+            currentIndex--;
+        }
+    }
+
+    public boolean isPlaying() {
+        return playing;
+    }
+
+    public void play() {
+        playing = true;
+    }
 
     public void pause() {
-        paused = true;
+        playing = false;
     }
 
-    public void resume() {
-        paused = false;
-    }
+    public void reset() {
 
-    public boolean isPaused() {
-        return paused;
+        currentIndex = 0;
+        playing = false;
     }
 }

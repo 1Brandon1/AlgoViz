@@ -1,6 +1,8 @@
 package com.brandon.ui;
 
-import com.brandon.algorithms.*;
+import com.brandon.algorithms.AlgorithmEngine;
+import com.brandon.algorithms.AlgorithmType;
+import com.brandon.events.AnimationEvent;
 import com.brandon.models.ArrayModel;
 import com.brandon.visualisation.ArrayVisualiser;
 import com.brandon.visualisation.EventPlayer;
@@ -13,81 +15,147 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 
+import java.util.List;
+
 public class MainView extends BorderPane {
 
     private final StackPane visualizationPane;
 
     private ArrayModel currentModel;
-    private ArrayVisualiser currentVisualiser;
 
-    private AlgorithmType selectedAlgorithm = AlgorithmType.BUBBLE_SORT;
+    private ArrayVisualiser visualiser;
+
+    private List<AnimationEvent> events;
+
+    private AlgorithmType selectedAlgorithm;
 
     public MainView() {
 
         visualizationPane = new StackPane();
 
         createLayout();
-        generateNewArray();
+
+        generateArray();
     }
 
     private void createLayout() {
 
-        Button generateButton = new Button("Generate Array");
-        Button sortButton = new Button("Run");
+        Button generate = new Button("Generate");
 
-        ComboBox<AlgorithmType> algorithmSelector = new ComboBox<>();
-        algorithmSelector.getItems().addAll(AlgorithmType.values());
-        algorithmSelector.setValue(AlgorithmType.BUBBLE_SORT);
+        Button sort = new Button("Sort");
 
-        algorithmSelector.setOnAction(e ->
-                selectedAlgorithm = algorithmSelector.getValue()
-        );
+        Button stepForward = new Button("Step →");
 
-        generateButton.setOnAction(e -> generateNewArray());
+        Button stepBack = new Button("← Step");
 
-        sortButton.setOnAction(e -> {
+        ComboBox<String> selector = new ComboBox<>();
 
-            var events = AlgorithmEngine.run(
-                    selectedAlgorithm,
-                    currentModel.getValues()
-            );
+        selector.getItems().addAll(
+                "Bubble Sort",
+                "Selection Sort",
+                "Insertion Sort",
+                "Merge Sort",
+                "Quick Sort");
 
-            EventPlayer.play(
-                    events,
-                    currentVisualiser
-            );
+        selector.setValue("Bubble Sort");
+
+        selectedAlgorithm = AlgorithmType.BUBBLE_SORT;
+
+        selector.setOnAction(e -> {
+
+            switch (selector.getValue()) {
+
+                case "Insertion Sort" ->
+                    selectedAlgorithm = AlgorithmType.INSERTION_SORT;
+
+                case "Selection Sort" ->
+                    selectedAlgorithm = AlgorithmType.SELECTION_SORT;
+
+                case "Merge Sort" ->
+                    selectedAlgorithm = AlgorithmType.MERGE_SORT;
+
+                case "Quick Sort" ->
+                    selectedAlgorithm = AlgorithmType.QUICK_SORT;
+
+                default ->
+                    selectedAlgorithm = AlgorithmType.BUBBLE_SORT;
+            }
+
         });
 
-        Button pauseButton = new Button("Pause");
-        Button resumeButton = new Button("Resume"); 
+        generate.setOnAction(e -> generateArray());
 
-        var controller = EventPlayer.getController();
-        pauseButton.setOnAction(e -> controller.pause());
-        resumeButton.setOnAction(e -> controller.resume());
+        sort.setOnAction(e -> {
 
-        HBox topBar = new HBox(
-            10,
-            generateButton,
-            algorithmSelector,
-            sortButton,
-            pauseButton,
-            resumeButton
-        );
+            events = AlgorithmEngine.run(
+                    selectedAlgorithm,
+                    currentModel.getValues());
 
-        topBar.setAlignment(Pos.CENTER_LEFT);
-        topBar.setPadding(new Insets(15));
+            EventPlayer.load(
+                    events,
+                    visualiser);
 
-        setTop(topBar);
+        });
+
+        stepForward.setOnAction(e -> {
+
+            if (events != null) {
+
+                EventPlayer.stepForward(
+                        events,
+                        visualiser);
+            }
+
+        });
+
+        stepBack.setOnAction(e -> {
+
+            if (events != null) {
+
+                EventPlayer.stepBack(
+                        events,
+                        visualiser);
+            }
+
+        });
+
+        HBox toolbar = new HBox(
+                10,
+                generate,
+                selector,
+                sort,
+                stepBack,
+                stepForward);
+
+        toolbar.setAlignment(Pos.CENTER_LEFT);
+
+        toolbar.setPadding(
+                new Insets(15));
+
+        setTop(toolbar);
+
         setCenter(visualizationPane);
     }
 
-    private void generateNewArray() {
+    private void generateArray() {
 
         currentModel = new ArrayModel(25);
 
-        currentVisualiser = new ArrayVisualiser(currentModel);
+        visualiser = new ArrayVisualiser(
+                currentModel);
 
-        visualizationPane.getChildren().clear();
-        visualizationPane.getChildren().add(currentVisualiser);
+        visualizationPane
+                .getChildren()
+                .clear();
+
+        visualizationPane
+                .getChildren()
+                .add(visualiser);
+
+        events = null;
+
+        EventPlayer
+                .getController()
+                .reset();
     }
 }

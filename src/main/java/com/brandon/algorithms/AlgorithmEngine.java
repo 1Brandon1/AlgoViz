@@ -8,11 +8,9 @@ public class AlgorithmEngine {
 
     public static List<AnimationEvent> run(
             AlgorithmType type,
-            int[] array
-    ) {
+            int[] array) {
 
-        SortingAlgorithm algorithm =
-                AlgorithmFactory.create(type);
+        SortingAlgorithm algorithm = AlgorithmFactory.create(type);
 
         return algorithm.generateEvents(array);
     }

@@ -2,8 +2,6 @@ package com.brandon.visualisation;
 
 import com.brandon.events.*;
 
-import javafx.application.Platform;
-
 import java.util.List;
 
 public class EventPlayer {
@@ -11,80 +9,96 @@ public class EventPlayer {
     private static final PlaybackController controller = new PlaybackController();
 
     public static PlaybackController getController() {
+
         return controller;
     }
 
-    public static void play(
+    public static void load(
             List<AnimationEvent> events,
-            ArrayVisualiser visualiser
-    ) {
-        playNext(events, visualiser, 0);
+            ArrayVisualiser visualiser) {
+
+        controller.reset();
+
+        visualiser.reset();
     }
 
-    private static void playNext(
+    public static void stepForward(
             List<AnimationEvent> events,
-            ArrayVisualiser visualiser,
-            int index
-    ) {
+            ArrayVisualiser visualiser) {
 
-        if (index >= events.size()) {
+        if (controller.getCurrentIndex() >= events.size()) {
             return;
         }
 
-        if (controller.isPaused()) {
+        applyEvent(
+                events.get(controller.getCurrentIndex()),
+                visualiser);
 
-            Platform.runLater(() ->
-                    playNext(events, visualiser, index)
-            );
+        controller.next();
+    }
 
+    public static void stepBack(
+            List<AnimationEvent> events,
+            ArrayVisualiser visualiser) {
+
+        if (controller.getCurrentIndex() <= 0) {
             return;
         }
 
-        AnimationEvent event = events.get(index);
+        controller.previous();
 
-        Runnable next = () ->
-                playNext(events, visualiser, index + 1);
+        rebuild(
+                events,
+                visualiser);
+    }
+
+    public static void rebuild(
+            List<AnimationEvent> events,
+            ArrayVisualiser visualiser) {
+
+        visualiser.reset();
+
+        int target = controller.getCurrentIndex();
+
+        for (int i = 0; i < target; i++) {
+
+            applyEvent(
+                    events.get(i),
+                    visualiser);
+        }
+    }
+
+    private static void applyEvent(
+            AnimationEvent event,
+            ArrayVisualiser visualiser) {
 
         if (event instanceof CompareEvent compare) {
 
-            visualiser.highlightBars(
+            visualiser.compare(
                     compare.getFirstIndex(),
-                    compare.getSecondIndex(),
-                    next
-            );
+                    compare.getSecondIndex());
 
         } else if (event instanceof SwapEvent swap) {
 
             visualiser.swapBars(
                     swap.getFirstIndex(),
-                    swap.getSecondIndex(),
-                    next
-            );
+                    swap.getSecondIndex());
 
         } else if (event instanceof OverwriteEvent overwrite) {
 
             visualiser.setBarHeight(
                     overwrite.getIndex(),
-                    overwrite.getNewValue(),
-                    next
-            );
+                    overwrite.getNewValue());
 
         } else if (event instanceof PivotEvent pivot) {
 
-            visualiser.highlightPivot(
-                    pivot.getPivotIndex(),
-                    next
-            );
+            visualiser.pivot(
+                    pivot.getPivotIndex());
 
         } else if (event instanceof SortedEvent sorted) {
 
             visualiser.markSorted(
-                    sorted.getIndex(),
-                    next
-            );
-
-        } else {
-            next.run();
+                    sorted.getIndex());
         }
     }
 }

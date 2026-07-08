@@ -28,7 +28,8 @@ public class MergeSort implements SortingAlgorithm {
 
     private void mergeSort(int[] arr, int left, int right, List<AnimationEvent> events) {
 
-        if (left >= right) return;
+        if (left >= right)
+            return;
 
         int mid = (left + right) / 2;
 
@@ -57,8 +58,10 @@ public class MergeSort implements SortingAlgorithm {
             }
         }
 
-        while (i <= mid) temp[k++] = arr[i++];
-        while (j <= right) temp[k++] = arr[j++];
+        while (i <= mid)
+            temp[k++] = arr[i++];
+        while (j <= right)
+            temp[k++] = arr[j++];
 
         for (int p = 0; p < temp.length; p++) {
 

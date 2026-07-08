@@ -1,5 +1,6 @@
 package com.brandon.models;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class ArrayModel {
@@ -17,7 +18,11 @@ public class ArrayModel {
         }
     }
 
+    public ArrayModel(int[] values) {
+        this.values = Arrays.copyOf(values, values.length);
+    }
+
     public int[] getValues() {
-        return values;
+        return Arrays.copyOf(values, values.length);
     }
 }

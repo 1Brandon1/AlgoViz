@@ -2,10 +2,6 @@ package com.brandon.visualisation;
 
 import com.brandon.models.ArrayModel;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
-import javafx.util.Duration;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -22,143 +18,128 @@ public class ArrayVisualiser extends HBox {
 
     private final List<Rectangle> bars = new ArrayList<>();
 
-    private final Set<Integer> sortedIndices = new HashSet<>();
-    private Integer pivotIndex = null;
+    private final int[] originalValues;
+
+    private final Set<Integer> sorted = new HashSet<>();
+
+    private final Set<Integer> compared = new HashSet<>();
+
+    private Integer pivot = null;
 
     public ArrayVisualiser(ArrayModel model) {
+
+        originalValues = model.getValues();
 
         setAlignment(Pos.BOTTOM_CENTER);
         setSpacing(2);
 
-        drawArray(model);
+        createBars();
+
         render();
     }
 
-    // -------------------------
-    // INITIAL RENDER
-    // -------------------------
+    private void createBars() {
 
-    private void drawArray(ArrayModel model) {
-
-        int[] values = model.getValues();
-
-        for (int value : values) {
+        for (int value : originalValues) {
 
             Rectangle bar = new Rectangle();
 
             bar.setWidth(BAR_WIDTH);
             bar.setHeight(value);
-            bar.setFill(Color.CORNFLOWERBLUE);
 
             bars.add(bar);
+
             getChildren().add(bar);
         }
     }
 
-    // -------------------------
-    // CENTRAL RENDER FUNCTION
-    // -------------------------
+    public void reset() {
+
+        sorted.clear();
+        compared.clear();
+        pivot = null;
+
+        for (int i = 0; i < bars.size(); i++) {
+
+            bars.get(i)
+                    .setHeight(originalValues[i]);
+        }
+
+        render();
+    }
+
+    public void swapBars(int a, int b) {
+
+        double temp = bars.get(a).getHeight();
+
+        bars.get(a)
+                .setHeight(bars.get(b).getHeight());
+
+        bars.get(b)
+                .setHeight(temp);
+    }
+
+    public void setBarHeight(int index, int value) {
+
+        bars.get(index)
+                .setHeight(value);
+    }
+
+    public void compare(int a, int b) {
+
+        compared.clear();
+
+        compared.add(a);
+        compared.add(b);
+
+        render();
+    }
+
+    public void markSorted(int index) {
+
+        sorted.add(index);
+
+        render();
+    }
+
+    public void pivot(int index) {
+
+        pivot = index;
+
+        render();
+    }
+
+    public void clearHighlights() {
+
+        compared.clear();
+
+        render();
+    }
 
     private void render() {
 
         for (int i = 0; i < bars.size(); i++) {
 
-            Rectangle bar = bars.get(i);
+            if (sorted.contains(i)) {
 
-            if (sortedIndices.contains(i)) {
-                bar.setFill(Color.LIMEGREEN);
-                continue;
+                bars.get(i)
+                        .setFill(Color.LIMEGREEN);
+
+            } else if (pivot != null && pivot == i) {
+
+                bars.get(i)
+                        .setFill(Color.MEDIUMPURPLE);
+
+            } else if (compared.contains(i)) {
+
+                bars.get(i)
+                        .setFill(Color.ORANGE);
+
+            } else {
+
+                bars.get(i)
+                        .setFill(Color.CORNFLOWERBLUE);
             }
-
-            if (pivotIndex != null && i == pivotIndex) {
-                bar.setFill(Color.MEDIUMPURPLE);
-                continue;
-            }
-
-            bar.setFill(Color.CORNFLOWERBLUE);
-        }
-    }
-
-    // -------------------------
-    // VISUAL ACTIONS
-    // -------------------------
-
-    public void highlightBars(int firstIndex, int secondIndex, Runnable onFinished) {
-
-        render();
-
-        bars.get(firstIndex).setFill(Color.ORANGE);
-        bars.get(secondIndex).setFill(Color.ORANGE);
-
-        if (pivotIndex != null) {
-            bars.get(pivotIndex).setFill(Color.MEDIUMPURPLE);
-        }
-
-        if (onFinished != null) {
-            onFinished.run();
-        }
-    }
-
-    public void swapBars(int firstIndex, int secondIndex, Runnable onFinished) {
-
-        Rectangle firstBar = bars.get(firstIndex);
-        Rectangle secondBar = bars.get(secondIndex);
-
-        double firstHeight = firstBar.getHeight();
-        double secondHeight = secondBar.getHeight();
-
-        Timeline animation = new Timeline(
-                new KeyFrame(
-                        Duration.millis(100),
-                        new KeyValue(firstBar.heightProperty(), secondHeight),
-                        new KeyValue(secondBar.heightProperty(), firstHeight)
-                )
-        );
-
-        animation.setOnFinished(e -> {
-            render();
-            if (onFinished != null) onFinished.run();
-        });
-
-        animation.play();
-    }
-
-    public void setBarHeight(int index, int value, Runnable onFinished) {
-
-        Rectangle bar = bars.get(index);
-
-        Timeline animation = new Timeline(
-                new KeyFrame(
-                        Duration.millis(100),
-                        new KeyValue(bar.heightProperty(), value)
-                )
-        );
-
-        animation.setOnFinished(e -> {
-            render();
-            if (onFinished != null) onFinished.run();
-        });
-
-        animation.play();
-    }
-
-    public void highlightPivot(int index, Runnable onFinished) {
-
-        pivotIndex = index;
-        render();
-
-        if (onFinished != null) {
-            onFinished.run();
-        }
-    }
-
-    public void markSorted(int index, Runnable onFinished) {
-
-        sortedIndices.add(index);
-        render();
-
-        if (onFinished != null) {
-            onFinished.run();
         }
     }
 }
