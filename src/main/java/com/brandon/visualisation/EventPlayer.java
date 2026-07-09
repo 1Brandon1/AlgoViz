@@ -2,14 +2,19 @@ package com.brandon.visualisation;
 
 import com.brandon.events.*;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
+
 import java.util.List;
 
 public class EventPlayer {
 
     private static final PlaybackController controller = new PlaybackController();
 
-    public static PlaybackController getController() {
+    private static Timeline timeline;
 
+    public static PlaybackController getController() {
         return controller;
     }
 
@@ -17,14 +22,30 @@ public class EventPlayer {
             List<AnimationEvent> events,
             ArrayVisualiser visualiser) {
 
+        stop();
+
         controller.reset();
 
         visualiser.reset();
     }
 
+    public static void stop() {
+
+        controller.pause();
+
+        if (timeline != null) {
+            timeline.stop();
+            timeline = null;
+        }
+    }
+
     public static void stepForward(
             List<AnimationEvent> events,
             ArrayVisualiser visualiser) {
+
+        if (events == null) {
+            return;
+        }
 
         if (controller.getCurrentIndex() >= events.size()) {
             return;
@@ -40,6 +61,10 @@ public class EventPlayer {
     public static void stepBack(
             List<AnimationEvent> events,
             ArrayVisualiser visualiser) {
+
+        if (events == null) {
+            return;
+        }
 
         if (controller.getCurrentIndex() <= 0) {
             return;
@@ -100,5 +125,40 @@ public class EventPlayer {
             visualiser.markSorted(
                     sorted.getIndex());
         }
+    }
+
+    public static void play(
+            List<AnimationEvent> events,
+            ArrayVisualiser visualiser) {
+
+        if (events == null || events.isEmpty()) {
+            return;
+        }
+
+        // Stop any previous playback
+        stop();
+
+        controller.play();
+
+        timeline = new Timeline(
+                new KeyFrame(
+                        Duration.millis(40),
+                        e -> {
+
+                            if (!controller.isPlaying()) {
+                                stop();
+                                return;
+                            }
+
+                            if (controller.getCurrentIndex() >= events.size()) {
+                                stop();
+                                return;
+                            }
+
+                            stepForward(events, visualiser);
+                        }));
+
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
 }

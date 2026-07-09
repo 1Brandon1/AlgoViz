@@ -48,6 +48,8 @@ public class MainView extends BorderPane {
 
         Button stepBack = new Button("← Step");
 
+        Button playPause = new Button("Play");
+
         ComboBox<String> selector = new ComboBox<>();
 
         selector.getItems().addAll(
@@ -119,12 +121,31 @@ public class MainView extends BorderPane {
 
         });
 
+        playPause.setOnAction(e -> {
+
+            if (events == null) {
+                return;
+            }
+
+            if (!EventPlayer.getController().isPlaying()) {
+
+                EventPlayer.play(events, visualiser);
+                playPause.setText("Pause");
+
+            } else {
+
+                EventPlayer.getController().pause();
+                playPause.setText("Play");
+            }
+        });
+
         HBox toolbar = new HBox(
                 10,
                 generate,
                 selector,
                 sort,
                 stepBack,
+                playPause,
                 stepForward);
 
         toolbar.setAlignment(Pos.CENTER_LEFT);
@@ -139,23 +160,17 @@ public class MainView extends BorderPane {
 
     private void generateArray() {
 
+        EventPlayer.stop();
+
         currentModel = new ArrayModel(25);
 
-        visualiser = new ArrayVisualiser(
-                currentModel);
+        visualiser = new ArrayVisualiser(currentModel);
 
-        visualizationPane
-                .getChildren()
-                .clear();
-
-        visualizationPane
-                .getChildren()
-                .add(visualiser);
+        visualizationPane.getChildren().clear();
+        visualizationPane.getChildren().add(visualiser);
 
         events = null;
 
-        EventPlayer
-                .getController()
-                .reset();
+        EventPlayer.getController().reset();
     }
 }
