@@ -95,6 +95,20 @@ public class ArrayVisualiser extends HBox {
         render();
     }
 
+    public void searchCompare(int index) {
+
+        reset();
+
+        bars.get(index)
+                .setFill(Color.ORANGE);
+    }
+
+    public void markFound(int index) {
+
+        bars.get(index)
+                .setFill(Color.LIMEGREEN);
+    }
+
     public void markSorted(int index) {
 
         sorted.add(index);

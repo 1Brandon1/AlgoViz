@@ -112,6 +112,16 @@ public class EventPlayer {
 
             visualiser.markSorted(
                     sorted.getIndex());
+
+        } else if (event instanceof SearchCompareEvent search) {
+
+            visualiser.searchCompare(
+                    search.getIndex());
+
+        } else if (event instanceof FoundEvent found) {
+
+            visualiser.markFound(
+                    found.getIndex());
         }
     }
 
