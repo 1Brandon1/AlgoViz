@@ -103,9 +103,7 @@ public class MainView extends BorderPane {
 
             if (events != null) {
 
-                EventPlayer.stepForward(
-                        events,
-                        visualiser);
+                EventPlayer.stepForward();
             }
 
         });
@@ -114,9 +112,7 @@ public class MainView extends BorderPane {
 
             if (events != null) {
 
-                EventPlayer.stepBack(
-                        events,
-                        visualiser);
+                EventPlayer.stepBack();
             }
 
         });
@@ -129,7 +125,7 @@ public class MainView extends BorderPane {
 
             if (!EventPlayer.getController().isPlaying()) {
 
-                EventPlayer.play(events, visualiser);
+                EventPlayer.play();
                 playPause.setText("Pause");
 
             } else {

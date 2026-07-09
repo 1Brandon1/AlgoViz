@@ -12,38 +12,35 @@ public class EventPlayer {
 
     private static final PlaybackController controller = new PlaybackController();
 
+    private static List<AnimationEvent> events;
+
+    private static ArrayVisualiser visualiser;
+
     private static Timeline timeline;
 
     public static PlaybackController getController() {
+
         return controller;
     }
 
     public static void load(
-            List<AnimationEvent> events,
-            ArrayVisualiser visualiser) {
+            List<AnimationEvent> newEvents,
+            ArrayVisualiser newVisualiser) {
 
         stop();
+
+        events = newEvents;
+
+        visualiser = newVisualiser;
 
         controller.reset();
 
         visualiser.reset();
     }
 
-    public static void stop() {
+    public static void stepForward() {
 
-        controller.pause();
-
-        if (timeline != null) {
-            timeline.stop();
-            timeline = null;
-        }
-    }
-
-    public static void stepForward(
-            List<AnimationEvent> events,
-            ArrayVisualiser visualiser) {
-
-        if (events == null) {
+        if (events == null || visualiser == null) {
             return;
         }
 
@@ -52,17 +49,14 @@ public class EventPlayer {
         }
 
         applyEvent(
-                events.get(controller.getCurrentIndex()),
-                visualiser);
+                events.get(controller.getCurrentIndex()));
 
         controller.next();
     }
 
-    public static void stepBack(
-            List<AnimationEvent> events,
-            ArrayVisualiser visualiser) {
+    public static void stepBack() {
 
-        if (events == null) {
+        if (events == null || visualiser == null) {
             return;
         }
 
@@ -72,14 +66,10 @@ public class EventPlayer {
 
         controller.previous();
 
-        rebuild(
-                events,
-                visualiser);
+        rebuild();
     }
 
-    public static void rebuild(
-            List<AnimationEvent> events,
-            ArrayVisualiser visualiser) {
+    private static void rebuild() {
 
         visualiser.reset();
 
@@ -88,14 +78,12 @@ public class EventPlayer {
         for (int i = 0; i < target; i++) {
 
             applyEvent(
-                    events.get(i),
-                    visualiser);
+                    events.get(i));
         }
     }
 
     private static void applyEvent(
-            AnimationEvent event,
-            ArrayVisualiser visualiser) {
+            AnimationEvent event) {
 
         if (event instanceof CompareEvent compare) {
 
@@ -127,38 +115,55 @@ public class EventPlayer {
         }
     }
 
-    public static void play(
-            List<AnimationEvent> events,
-            ArrayVisualiser visualiser) {
+    public static void play() {
 
-        if (events == null || events.isEmpty()) {
+        if (events == null || visualiser == null) {
             return;
         }
 
-        // Stop any previous playback
         stop();
 
         controller.play();
 
         timeline = new Timeline(
+
                 new KeyFrame(
                         Duration.millis(40),
+
                         e -> {
 
                             if (!controller.isPlaying()) {
+
                                 stop();
+
                                 return;
                             }
 
                             if (controller.getCurrentIndex() >= events.size()) {
+
                                 stop();
+
                                 return;
                             }
 
-                            stepForward(events, visualiser);
+                            stepForward();
                         }));
 
-        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.setCycleCount(
+                Timeline.INDEFINITE);
+
         timeline.play();
+    }
+
+    public static void stop() {
+
+        controller.pause();
+
+        if (timeline != null) {
+
+            timeline.stop();
+
+            timeline = null;
+        }
     }
 }
