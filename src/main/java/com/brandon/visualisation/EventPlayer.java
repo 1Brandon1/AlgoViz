@@ -129,6 +129,11 @@ public class EventPlayer {
         } else if (event instanceof SortArrayEvent) {
 
             visualiser.sortBars();
+        } else if (event instanceof SearchRangeEvent range) {
+
+            visualiser.setSearchRange(
+                    range.getLeft(),
+                    range.getRight());
         }
     }
 

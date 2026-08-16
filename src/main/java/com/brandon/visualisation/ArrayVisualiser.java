@@ -19,12 +19,6 @@ public class ArrayVisualiser extends HBox {
 
     private final List<Rectangle> bars = new ArrayList<>();
 
-    /*
-     * The values currently represented by the bars.
-     *
-     * This is important because the array can change
-     * during sorting or Binary Search preparation.
-     */
     private final int[] originalValues;
     private final int[] currentValues;
 
@@ -34,6 +28,9 @@ public class ArrayVisualiser extends HBox {
     private IntConsumer barClickListener;
 
     private Integer pivot = null;
+
+    private Integer searchLeft = null;
+    private Integer searchRight = null;
 
     public ArrayVisualiser(ArrayModel model) {
 
@@ -130,6 +127,9 @@ public class ArrayVisualiser extends HBox {
 
         pivot = null;
 
+        searchLeft = null;
+        searchRight = null;
+
         for (int i = 0; i < bars.size(); i++) {
 
             currentValues[i] = originalValues[i];
@@ -198,15 +198,21 @@ public class ArrayVisualiser extends HBox {
     // SEARCH COMPARISON
     // -------------------------------------------------
 
+    public void setSearchRange(
+            int left,
+            int right) {
+
+        searchLeft = left;
+        searchRight = right;
+
+        compared.clear();
+
+        render();
+    }
+
     public void searchCompare(
             int index) {
 
-        /*
-         * Do NOT call reset() here.
-         *
-         * Binary Search may already have sorted the
-         * displayed array using OverwriteEvents.
-         */
         compared.clear();
 
         compared.add(index);
@@ -284,26 +290,44 @@ public class ArrayVisualiser extends HBox {
 
         for (int i = 0; i < bars.size(); i++) {
 
+            Rectangle bar = bars.get(i);
+
+            // Outside the Binary Search range
+            if (searchLeft != null &&
+                    searchRight != null &&
+                    (i < searchLeft ||
+                            i > searchRight)) {
+
+                bar.setFill(
+                        Color.LIGHTGRAY);
+
+                continue;
+            }
+
+            // Sorted
             if (sorted.contains(i)) {
 
-                bars.get(i)
-                        .setFill(Color.LIMEGREEN);
+                bar.setFill(
+                        Color.LIMEGREEN);
 
+                // Pivot
             } else if (pivot != null &&
                     pivot == i) {
 
-                bars.get(i)
-                        .setFill(Color.MEDIUMPURPLE);
+                bar.setFill(
+                        Color.MEDIUMPURPLE);
 
+                // Search comparison
             } else if (compared.contains(i)) {
 
-                bars.get(i)
-                        .setFill(Color.ORANGE);
+                bar.setFill(
+                        Color.ORANGE);
 
+                // Default
             } else {
 
-                bars.get(i)
-                        .setFill(Color.CORNFLOWERBLUE);
+                bar.setFill(
+                        Color.CORNFLOWERBLUE);
             }
         }
     }
