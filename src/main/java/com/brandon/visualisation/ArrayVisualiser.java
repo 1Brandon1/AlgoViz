@@ -7,6 +7,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.util.function.IntConsumer;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -23,6 +24,8 @@ public class ArrayVisualiser extends HBox {
     private final Set<Integer> sorted = new HashSet<>();
 
     private final Set<Integer> compared = new HashSet<>();
+
+    private IntConsumer barClickListener;
 
     private Integer pivot = null;
 
@@ -50,7 +53,23 @@ public class ArrayVisualiser extends HBox {
             bars.add(bar);
 
             getChildren().add(bar);
+
+            final int index = bars.size() - 1;
+
+            bar.setOnMouseClicked(e -> {
+
+                if (barClickListener != null) {
+                    barClickListener.accept(index);
+                }
+
+            });
         }
+    }
+
+    public void setBarClickListener(
+            IntConsumer listener) {
+
+        this.barClickListener = listener;
     }
 
     public void reset() {

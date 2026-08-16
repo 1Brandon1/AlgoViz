@@ -32,6 +32,7 @@ public class MainView extends BorderPane {
 
         private AlgorithmType selectedAlgorithm = AlgorithmType.BUBBLE_SORT;
         private SearchType selectedSearch = SearchType.LINEAR_SEARCH;
+        private final TextField targetInput = new TextField();
 
         private boolean searchingMode = false;
 
@@ -61,8 +62,6 @@ public class MainView extends BorderPane {
                 ComboBox<String> sortSelector = new ComboBox<>();
 
                 ComboBox<String> searchSelector = new ComboBox<>();
-
-                TextField targetInput = new TextField();
 
                 // -------------------------
                 // MODE SELECTOR
@@ -247,17 +246,31 @@ public class MainView extends BorderPane {
 
                 currentModel = new ArrayModel(25);
 
-                System.out.println(
-                                Arrays.toString(
-                                                currentModel.getValues()));
-
                 visualiser = new ArrayVisualiser(currentModel);
 
-                visualizationPane.getChildren().clear();
-                visualizationPane.getChildren().add(visualiser);
+                visualiser.setBarClickListener(index -> {
+
+                        if (searchingMode) {
+
+                                targetInput.setText(
+                                                String.valueOf(
+                                                                currentModel.getValues()[index]));
+                        }
+                });
+
+                visualizationPane
+                                .getChildren()
+                                .clear();
+
+                visualizationPane
+                                .getChildren()
+                                .add(visualiser);
 
                 events = null;
 
-                EventPlayer.getController().reset();
+                targetInput.clear();
+
+                EventPlayer.getController()
+                                .reset();
         }
 }
