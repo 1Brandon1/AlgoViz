@@ -126,6 +126,9 @@ public class EventPlayer {
         } else if (event instanceof NotFoundEvent) {
 
             visualiser.markNotFound();
+        } else if (event instanceof SortArrayEvent) {
+
+            visualiser.sortBars();
         }
     }
 

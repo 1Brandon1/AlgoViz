@@ -32,9 +32,9 @@ public class MainView extends BorderPane {
 
         private AlgorithmType selectedAlgorithm = AlgorithmType.BUBBLE_SORT;
         private SearchType selectedSearch = SearchType.LINEAR_SEARCH;
-        private final TextField targetInput = new TextField();
 
         private boolean searchingMode = false;
+        private final TextField targetInput = new TextField();
 
         public MainView() {
 
@@ -244,9 +244,12 @@ public class MainView extends BorderPane {
 
         private void generateArray() {
 
+                EventPlayer.stop();
+
                 currentModel = new ArrayModel(25);
 
-                visualiser = new ArrayVisualiser(currentModel);
+                visualiser = new ArrayVisualiser(
+                                currentModel);
 
                 visualiser.setBarClickListener(index -> {
 
@@ -254,7 +257,7 @@ public class MainView extends BorderPane {
 
                                 targetInput.setText(
                                                 String.valueOf(
-                                                                currentModel.getValues()[index]));
+                                                                visualiser.getValueAt(index)));
                         }
                 });
 

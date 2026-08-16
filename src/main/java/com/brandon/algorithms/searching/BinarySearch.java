@@ -3,9 +3,12 @@ package com.brandon.algorithms.searching;
 import com.brandon.algorithms.SearchingAlgorithm;
 import com.brandon.events.AnimationEvent;
 import com.brandon.events.FoundEvent;
+import com.brandon.events.NotFoundEvent;
 import com.brandon.events.SearchCompareEvent;
+import com.brandon.events.SortArrayEvent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BinarySearch implements SearchingAlgorithm {
@@ -17,19 +20,47 @@ public class BinarySearch implements SearchingAlgorithm {
 
         List<AnimationEvent> events = new ArrayList<>();
 
-        for (int i = 0; i < array.length; i++) {
+        int[] sorted = Arrays.copyOf(
+                array,
+                array.length);
+
+        Arrays.sort(sorted);
+
+        // Sort the visualiser in one event
+        events.add(new SortArrayEvent());
+
+        int left = 0;
+        int right = sorted.length - 1;
+
+        while (left <= right) {
+
+            int middle = left + (right - left) / 2;
 
             events.add(
-                    new SearchCompareEvent(i));
+                    new SearchCompareEvent(
+                            middle));
 
-            if (array[i] == target) {
+            if (sorted[middle] == target) {
 
                 events.add(
-                        new FoundEvent(i));
+                        new FoundEvent(
+                                middle));
 
-                break;
+                return events;
+            }
+
+            if (sorted[middle] < target) {
+
+                left = middle + 1;
+
+            } else {
+
+                right = middle - 1;
             }
         }
+
+        events.add(
+                new NotFoundEvent());
 
         return events;
     }

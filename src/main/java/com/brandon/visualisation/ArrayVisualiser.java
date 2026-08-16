@@ -7,11 +7,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-import java.util.function.IntConsumer;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.IntConsumer;
 
 public class ArrayVisualiser extends HBox {
 
@@ -19,10 +19,16 @@ public class ArrayVisualiser extends HBox {
 
     private final List<Rectangle> bars = new ArrayList<>();
 
+    /*
+     * The values currently represented by the bars.
+     *
+     * This is important because the array can change
+     * during sorting or Binary Search preparation.
+     */
     private final int[] originalValues;
+    private final int[] currentValues;
 
     private final Set<Integer> sorted = new HashSet<>();
-
     private final Set<Integer> compared = new HashSet<>();
 
     private IntConsumer barClickListener;
@@ -31,7 +37,8 @@ public class ArrayVisualiser extends HBox {
 
     public ArrayVisualiser(ArrayModel model) {
 
-        originalValues = model.getValues();
+        originalValues = model.getValues().clone();
+        currentValues = originalValues.clone();
 
         setAlignment(Pos.BOTTOM_CENTER);
         setSpacing(2);
@@ -41,30 +48,61 @@ public class ArrayVisualiser extends HBox {
         render();
     }
 
+    // -------------------------------------------------
+    // CREATE BARS
+    // -------------------------------------------------
+
     private void createBars() {
 
-        for (int value : originalValues) {
+        for (int i = 0; i < currentValues.length; i++) {
 
             Rectangle bar = new Rectangle();
 
             bar.setWidth(BAR_WIDTH);
-            bar.setHeight(value);
+            bar.setHeight(currentValues[i]);
 
             bars.add(bar);
 
             getChildren().add(bar);
 
-            final int index = bars.size() - 1;
+            final int index = i;
 
             bar.setOnMouseClicked(e -> {
 
                 if (barClickListener != null) {
                     barClickListener.accept(index);
                 }
-
             });
         }
     }
+
+    public void sortBars() {
+
+        List<Integer> values = new ArrayList<>();
+
+        for (int value : currentValues) {
+            values.add(value);
+        }
+
+        values.sort(Integer::compareTo);
+
+        for (int i = 0; i < values.size(); i++) {
+
+            currentValues[i] = values.get(i);
+
+            bars.get(i).setHeight(
+                    currentValues[i]);
+        }
+
+        compared.clear();
+        pivot = null;
+
+        render();
+    }
+
+    // -------------------------------------------------
+    // BAR CLICK LISTENER
+    // -------------------------------------------------
 
     public void setBarClickListener(
             IntConsumer listener) {
@@ -72,39 +110,81 @@ public class ArrayVisualiser extends HBox {
         this.barClickListener = listener;
     }
 
+    // -------------------------------------------------
+    // GET CURRENT VALUE
+    // -------------------------------------------------
+
+    public int getValueAt(int index) {
+
+        return currentValues[index];
+    }
+
+    // -------------------------------------------------
+    // RESET
+    // -------------------------------------------------
+
     public void reset() {
 
         sorted.clear();
         compared.clear();
+
         pivot = null;
 
         for (int i = 0; i < bars.size(); i++) {
 
-            bars.get(i)
-                    .setHeight(originalValues[i]);
+            currentValues[i] = originalValues[i];
+
+            bars.get(i).setHeight(
+                    originalValues[i]);
         }
 
         render();
     }
 
+    // -------------------------------------------------
+    // SWAP
+    // -------------------------------------------------
+
     public void swapBars(int a, int b) {
 
-        double temp = bars.get(a).getHeight();
+        int value = currentValues[a];
 
-        bars.get(a)
-                .setHeight(bars.get(b).getHeight());
+        currentValues[a] = currentValues[b];
 
-        bars.get(b)
-                .setHeight(temp);
+        currentValues[b] = value;
+
+        bars.get(a).setHeight(
+                currentValues[a]);
+
+        bars.get(b).setHeight(
+                currentValues[b]);
+
+        render();
     }
 
-    public void setBarHeight(int index, int value) {
+    // -------------------------------------------------
+    // OVERWRITE
+    // -------------------------------------------------
+
+    public void setBarHeight(
+            int index,
+            int value) {
+
+        currentValues[index] = value;
 
         bars.get(index)
                 .setHeight(value);
+
+        render();
     }
 
-    public void compare(int a, int b) {
+    // -------------------------------------------------
+    // NORMAL SORT COMPARISON
+    // -------------------------------------------------
+
+    public void compare(
+            int a,
+            int b) {
 
         compared.clear();
 
@@ -114,40 +194,80 @@ public class ArrayVisualiser extends HBox {
         render();
     }
 
-    public void searchCompare(int index) {
+    // -------------------------------------------------
+    // SEARCH COMPARISON
+    // -------------------------------------------------
 
-        reset();
+    public void searchCompare(
+            int index) {
 
-        bars.get(index)
-                .setFill(Color.ORANGE);
+        /*
+         * Do NOT call reset() here.
+         *
+         * Binary Search may already have sorted the
+         * displayed array using OverwriteEvents.
+         */
+        compared.clear();
+
+        compared.add(index);
+
+        render();
     }
 
-    public void markFound(int index) {
+    // -------------------------------------------------
+    // FOUND
+    // -------------------------------------------------
+
+    public void markFound(
+            int index) {
+
+        compared.clear();
 
         bars.get(index)
                 .setFill(Color.LIMEGREEN);
     }
 
+    // -------------------------------------------------
+    // NOT FOUND
+    // -------------------------------------------------
+
     public void markNotFound() {
 
+        compared.clear();
+
         for (Rectangle bar : bars) {
+
             bar.setFill(Color.CRIMSON);
         }
     }
 
-    public void markSorted(int index) {
+    // -------------------------------------------------
+    // SORTED
+    // -------------------------------------------------
+
+    public void markSorted(
+            int index) {
 
         sorted.add(index);
 
         render();
     }
 
-    public void pivot(int index) {
+    // -------------------------------------------------
+    // PIVOT
+    // -------------------------------------------------
+
+    public void pivot(
+            int index) {
 
         pivot = index;
 
         render();
     }
+
+    // -------------------------------------------------
+    // CLEAR HIGHLIGHTS
+    // -------------------------------------------------
 
     public void clearHighlights() {
 
@@ -155,6 +275,10 @@ public class ArrayVisualiser extends HBox {
 
         render();
     }
+
+    // -------------------------------------------------
+    // RENDER
+    // -------------------------------------------------
 
     private void render() {
 
@@ -165,7 +289,8 @@ public class ArrayVisualiser extends HBox {
                 bars.get(i)
                         .setFill(Color.LIMEGREEN);
 
-            } else if (pivot != null && pivot == i) {
+            } else if (pivot != null &&
+                    pivot == i) {
 
                 bars.get(i)
                         .setFill(Color.MEDIUMPURPLE);
