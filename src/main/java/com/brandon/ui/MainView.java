@@ -23,215 +23,241 @@ import java.util.List;
 
 public class MainView extends BorderPane {
 
-    private final StackPane visualizationPane;
+        private final StackPane visualizationPane;
 
-    private ArrayModel currentModel;
-    private ArrayVisualiser visualiser;
+        private ArrayModel currentModel;
+        private ArrayVisualiser visualiser;
 
-    private List<AnimationEvent> events;
+        private List<AnimationEvent> events;
 
-    private AlgorithmType selectedAlgorithm = AlgorithmType.BUBBLE_SORT;
+        private AlgorithmType selectedAlgorithm = AlgorithmType.BUBBLE_SORT;
+        private SearchType selectedSearch = SearchType.LINEAR_SEARCH;
 
-    private SearchType selectedSearch = SearchType.LINEAR_SEARCH;
+        private boolean searchingMode = false;
 
-    private boolean searchingMode = false;
+        public MainView() {
 
-    public MainView() {
+                visualizationPane = new StackPane();
 
-        visualizationPane = new StackPane();
+                createLayout();
 
-        createLayout();
+                generateArray();
+        }
 
-        generateArray();
-    }
+        private void createLayout() {
 
-    private void createLayout() {
+                Button generate = new Button("Generate");
 
-        Button generate = new Button("Generate");
+                Button run = new Button("Sort");
 
-        Button run = new Button("Run");
+                Button stepForward = new Button("Step →");
 
-        Button stepForward = new Button("Step →");
+                Button stepBack = new Button("← Step");
 
-        Button stepBack = new Button("← Step");
+                Button playPause = new Button("Play");
 
-        Button playPause = new Button("Play");
+                ComboBox<String> modeSelector = new ComboBox<>();
 
-        ComboBox<String> modeSelector = new ComboBox<>();
+                ComboBox<String> sortSelector = new ComboBox<>();
 
-        modeSelector.getItems().addAll(
-                "Sorting",
-                "Searching");
+                ComboBox<String> searchSelector = new ComboBox<>();
 
-        modeSelector.setValue("Sorting");
+                TextField targetInput = new TextField();
 
-        modeSelector.setOnAction(e -> {
+                // -------------------------
+                // MODE SELECTOR
+                // -------------------------
 
-            searchingMode = modeSelector.getValue()
-                    .equals("Searching");
+                modeSelector.getItems().addAll(
+                                "Sorting",
+                                "Searching");
 
-        });
+                modeSelector.setValue("Sorting");
 
-        ComboBox<String> sortSelector = new ComboBox<>();
+                // -------------------------
+                // SORT SELECTOR
+                // -------------------------
 
-        sortSelector.getItems().addAll(
-                "Bubble Sort",
-                "Selection Sort",
-                "Insertion Sort",
-                "Merge Sort",
-                "Quick Sort");
+                sortSelector.getItems().addAll(
+                                "Bubble Sort",
+                                "Selection Sort",
+                                "Insertion Sort",
+                                "Merge Sort",
+                                "Quick Sort");
 
-        sortSelector.setValue(
-                "Bubble Sort");
+                sortSelector.setValue("Bubble Sort");
 
-        sortSelector.setOnAction(e -> {
+                sortSelector.setOnAction(e -> {
 
-            switch (sortSelector.getValue()) {
+                        switch (sortSelector.getValue()) {
 
-                case "Selection Sort" ->
-                    selectedAlgorithm = AlgorithmType.SELECTION_SORT;
+                                case "Selection Sort" ->
+                                        selectedAlgorithm = AlgorithmType.SELECTION_SORT;
 
-                case "Insertion Sort" ->
-                    selectedAlgorithm = AlgorithmType.INSERTION_SORT;
+                                case "Insertion Sort" ->
+                                        selectedAlgorithm = AlgorithmType.INSERTION_SORT;
 
-                case "Merge Sort" ->
-                    selectedAlgorithm = AlgorithmType.MERGE_SORT;
+                                case "Merge Sort" ->
+                                        selectedAlgorithm = AlgorithmType.MERGE_SORT;
 
-                case "Quick Sort" ->
-                    selectedAlgorithm = AlgorithmType.QUICK_SORT;
+                                case "Quick Sort" ->
+                                        selectedAlgorithm = AlgorithmType.QUICK_SORT;
 
-                default ->
-                    selectedAlgorithm = AlgorithmType.BUBBLE_SORT;
-            }
+                                default ->
+                                        selectedAlgorithm = AlgorithmType.BUBBLE_SORT;
+                        }
+                });
 
-        });
+                // -------------------------
+                // SEARCH SELECTOR
+                // -------------------------
 
-        ComboBox<String> searchSelector = new ComboBox<>();
+                searchSelector.getItems().addAll(
+                                "Linear Search",
+                                "Binary Search");
 
-        searchSelector.getItems().addAll(
-                "Linear Search",
-                "Binary Search");
+                searchSelector.setValue("Linear Search");
 
-        searchSelector.setValue(
-                "Linear Search");
+                searchSelector.setOnAction(e -> {
 
-        searchSelector.setOnAction(e -> {
+                        switch (searchSelector.getValue()) {
 
-            switch (searchSelector.getValue()) {
+                                case "Binary Search" ->
+                                        selectedSearch = SearchType.BINARY_SEARCH;
 
-                case "Binary Search" ->
-                    selectedSearch = SearchType.BINARY_SEARCH;
+                                default ->
+                                        selectedSearch = SearchType.LINEAR_SEARCH;
+                        }
+                });
 
-                default ->
-                    selectedSearch = SearchType.LINEAR_SEARCH;
-            }
+                // -------------------------
+                // TARGET INPUT
+                // -------------------------
 
-        });
+                targetInput.setPromptText("Target");
 
-        TextField targetInput = new TextField();
+                // Hidden by default
 
-        targetInput.setPromptText(
-                "Target");
+                searchSelector.setVisible(false);
+                searchSelector.setManaged(false);
 
-        generate.setOnAction(e -> generateArray());
+                targetInput.setVisible(false);
+                targetInput.setManaged(false);
 
-        run.setOnAction(e -> {
+                // -------------------------
+                // MODE CHANGED
+                // -------------------------
 
-            if (searchingMode) {
+                modeSelector.setOnAction(e -> {
 
-                int target = Integer.parseInt(
-                        targetInput.getText());
+                        searchingMode = modeSelector.getValue().equals("Searching");
 
-                events = SearchEngine.run(
-                        selectedSearch,
-                        currentModel.getValues(),
-                        target);
+                        sortSelector.setVisible(!searchingMode);
+                        sortSelector.setManaged(!searchingMode);
 
-            } else {
+                        searchSelector.setVisible(searchingMode);
+                        searchSelector.setManaged(searchingMode);
 
-                events = AlgorithmEngine.run(
-                        selectedAlgorithm,
-                        currentModel.getValues());
-            }
+                        targetInput.setVisible(searchingMode);
+                        targetInput.setManaged(searchingMode);
 
-            EventPlayer.load(
-                    events,
-                    visualiser);
+                        run.setText(searchingMode ? "Search" : "Sort");
+                });
 
-        });
+                // -------------------------
+                // BUTTONS
+                // -------------------------
 
-        stepForward.setOnAction(e -> EventPlayer.stepForward());
+                generate.setOnAction(e -> generateArray());
 
-        stepBack.setOnAction(e -> EventPlayer.stepBack());
+                run.setOnAction(e -> {
 
-        playPause.setOnAction(e -> {
+                        if (searchingMode) {
 
-            if (!EventPlayer.getController()
-                    .isPlaying()) {
+                                try {
 
-                EventPlayer.play();
+                                        int target = Integer.parseInt(targetInput.getText());
 
-                playPause.setText(
-                        "Pause");
+                                        events = SearchEngine.run(
+                                                        selectedSearch,
+                                                        currentModel.getValues(),
+                                                        target);
 
-            } else {
+                                } catch (NumberFormatException ex) {
 
-                EventPlayer.getController()
-                        .pause();
+                                        return;
+                                }
 
-                playPause.setText(
-                        "Play");
-            }
+                        } else {
 
-        });
+                                events = AlgorithmEngine.run(
+                                                selectedAlgorithm,
+                                                currentModel.getValues());
+                        }
 
-        HBox toolbar = new HBox(
-                10,
-                generate,
-                modeSelector,
-                sortSelector,
-                searchSelector,
-                targetInput,
-                run,
-                stepBack,
-                playPause,
-                stepForward);
+                        EventPlayer.load(
+                                        events,
+                                        visualiser);
+                });
 
-        toolbar.setAlignment(
-                Pos.CENTER_LEFT);
+                stepForward.setOnAction(e -> EventPlayer.stepForward());
 
-        toolbar.setPadding(
-                new Insets(15));
+                stepBack.setOnAction(e -> EventPlayer.stepBack());
 
-        setTop(toolbar);
+                playPause.setOnAction(e -> {
 
-        setCenter(
-                visualizationPane);
-    }
+                        if (!EventPlayer.getController().isPlaying()) {
 
-    private void generateArray() {
+                                EventPlayer.play();
 
-        currentModel = new ArrayModel(25);
+                                playPause.setText("Pause");
 
-        System.out.println(
-                Arrays.toString(
-                        currentModel.getValues()));
+                        } else {
 
-        visualiser = new ArrayVisualiser(
-                currentModel);
+                                EventPlayer.getController().pause();
 
-        visualizationPane
-                .getChildren()
-                .clear();
+                                playPause.setText("Play");
+                        }
+                });
 
-        visualizationPane
-                .getChildren()
-                .add(
-                        visualiser);
+                // -------------------------
+                // TOOLBAR
+                // -------------------------
 
-        events = null;
+                HBox toolbar = new HBox(
+                                10,
+                                generate,
+                                modeSelector,
+                                sortSelector,
+                                searchSelector,
+                                targetInput,
+                                run,
+                                stepBack,
+                                playPause,
+                                stepForward);
 
-        EventPlayer.getController()
-                .reset();
-    }
+                toolbar.setAlignment(Pos.CENTER_LEFT);
+                toolbar.setPadding(new Insets(15));
+
+                setTop(toolbar);
+                setCenter(visualizationPane);
+        }
+
+        private void generateArray() {
+
+                currentModel = new ArrayModel(25);
+
+                System.out.println(
+                                Arrays.toString(
+                                                currentModel.getValues()));
+
+                visualiser = new ArrayVisualiser(currentModel);
+
+                visualizationPane.getChildren().clear();
+                visualizationPane.getChildren().add(visualiser);
+
+                events = null;
+
+                EventPlayer.getController().reset();
+        }
 }

@@ -122,6 +122,10 @@ public class EventPlayer {
 
             visualiser.markFound(
                     found.getIndex());
+
+        } else if (event instanceof NotFoundEvent) {
+
+            visualiser.markNotFound();
         }
     }
 

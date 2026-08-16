@@ -109,6 +109,13 @@ public class ArrayVisualiser extends HBox {
                 .setFill(Color.LIMEGREEN);
     }
 
+    public void markNotFound() {
+
+        for (Rectangle bar : bars) {
+            bar.setFill(Color.CRIMSON);
+        }
+    }
+
     public void markSorted(int index) {
 
         sorted.add(index);
