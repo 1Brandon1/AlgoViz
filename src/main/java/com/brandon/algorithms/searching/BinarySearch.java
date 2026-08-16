@@ -71,9 +71,7 @@ public class BinarySearch implements SearchingAlgorithm {
 
                 left = middle + 1;
 
-            }
-            // Target is smaller
-            else {
+            } else {
 
                 right = middle - 1;
             }

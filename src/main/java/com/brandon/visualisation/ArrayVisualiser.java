@@ -224,13 +224,11 @@ public class ArrayVisualiser extends HBox {
     // FOUND
     // -------------------------------------------------
 
-    public void markFound(
-            int index) {
+    public void markFound(int index) {
 
         compared.clear();
 
-        bars.get(index)
-                .setFill(Color.LIMEGREEN);
+        bars.get(index).setFill(Color.LIMEGREEN);
     }
 
     // -------------------------------------------------
@@ -240,11 +238,7 @@ public class ArrayVisualiser extends HBox {
     public void markNotFound() {
 
         compared.clear();
-
-        for (Rectangle bar : bars) {
-
-            bar.setFill(Color.CRIMSON);
-        }
+        render();
     }
 
     // -------------------------------------------------
@@ -292,42 +286,36 @@ public class ArrayVisualiser extends HBox {
 
             Rectangle bar = bars.get(i);
 
-            // Outside the Binary Search range
+            // Outside active Binary Search range
             if (searchLeft != null &&
                     searchRight != null &&
                     (i < searchLeft ||
                             i > searchRight)) {
 
-                bar.setFill(
-                        Color.LIGHTGRAY);
-
+                bar.setFill(Color.LIGHTGRAY);
                 continue;
             }
 
             // Sorted
             if (sorted.contains(i)) {
 
-                bar.setFill(
-                        Color.LIMEGREEN);
+                bar.setFill(Color.LIMEGREEN);
 
                 // Pivot
             } else if (pivot != null &&
                     pivot == i) {
 
-                bar.setFill(
-                        Color.MEDIUMPURPLE);
+                bar.setFill(Color.MEDIUMPURPLE);
 
-                // Search comparison
+                // Current comparison
             } else if (compared.contains(i)) {
 
-                bar.setFill(
-                        Color.ORANGE);
+                bar.setFill(Color.ORANGE);
 
-                // Default
+                // Normal
             } else {
 
-                bar.setFill(
-                        Color.CORNFLOWERBLUE);
+                bar.setFill(Color.CORNFLOWERBLUE);
             }
         }
     }
