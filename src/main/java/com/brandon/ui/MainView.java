@@ -81,7 +81,8 @@ public class MainView extends BorderPane {
                                 "Selection Sort",
                                 "Insertion Sort",
                                 "Merge Sort",
-                                "Quick Sort");
+                                "Quick Sort",
+                                "Heap Sort");
 
                 sortSelector.setValue("Bubble Sort");
 
@@ -100,6 +101,9 @@ public class MainView extends BorderPane {
 
                                 case "Quick Sort" ->
                                         selectedAlgorithm = AlgorithmType.QUICK_SORT;
+
+                                case "Heap Sort" ->
+                                        selectedAlgorithm = AlgorithmType.HEAP_SORT;
 
                                 default ->
                                         selectedAlgorithm = AlgorithmType.BUBBLE_SORT;
