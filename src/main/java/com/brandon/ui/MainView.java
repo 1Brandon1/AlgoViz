@@ -112,7 +112,9 @@ public class MainView extends BorderPane {
 
                 searchSelector.getItems().addAll(
                                 "Linear Search",
-                                "Binary Search");
+                                "Binary Search",
+                                "Jump Search",
+                                "Interpolation Search");
 
                 searchSelector.setValue("Linear Search");
 
@@ -122,6 +124,12 @@ public class MainView extends BorderPane {
 
                                 case "Binary Search" ->
                                         selectedSearch = SearchType.BINARY_SEARCH;
+
+                                case "Jump Search" ->
+                                        selectedSearch = SearchType.JUMP_SEARCH;
+
+                                case "Interpolation Search" ->
+                                        selectedSearch = SearchType.INTERPOLATION_SEARCH;
 
                                 default ->
                                         selectedSearch = SearchType.LINEAR_SEARCH;
