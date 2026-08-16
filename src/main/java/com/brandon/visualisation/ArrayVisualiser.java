@@ -15,7 +15,7 @@ import java.util.function.IntConsumer;
 
 public class ArrayVisualiser extends HBox {
 
-    private static final double BAR_WIDTH = 20;
+    private static final double BAR_WIDTH = 22;
 
     private final List<Rectangle> bars = new ArrayList<>();
 
@@ -38,7 +38,7 @@ public class ArrayVisualiser extends HBox {
         currentValues = originalValues.clone();
 
         setAlignment(Pos.BOTTOM_CENTER);
-        setSpacing(2);
+        setSpacing(4);
 
         createBars();
 

@@ -1,0 +1,183 @@
+.root {
+	-fx-background-color: #0f1117;
+	-fx-font-family: 'Segoe UI', sans-serif;
+}
+
+/* -----------------------------------------
+   MAIN CONTAINERS
+   ----------------------------------------- */
+
+.header {
+	-fx-background-color: #151821;
+	-fx-border-color: #242936;
+	-fx-border-width: 0 0 1 0;
+}
+
+.visualisation-container {
+	-fx-background-color: #11141b;
+	-fx-background-radius: 12;
+	-fx-border-color: #242936;
+	-fx-border-radius: 12;
+	-fx-min-height: 350px;
+}
+
+.control-panel {
+	-fx-background-color: #151821;
+	-fx-border-color: #242936;
+	-fx-border-width: 1 0 0 0;
+}
+
+/* -----------------------------------------
+   TEXT
+   ----------------------------------------- */
+
+.title {
+	-fx-text-fill: #f1f3f5;
+	-fx-font-size: 22px;
+	-fx-font-weight: bold;
+}
+
+.subtitle {
+	-fx-text-fill: #8b93a1;
+	-fx-font-size: 12px;
+}
+
+.section-title {
+	-fx-text-fill: #8b93a1;
+	-fx-font-size: 11px;
+	-fx-font-weight: bold;
+}
+
+.status-text {
+	-fx-text-fill: #8b93a1;
+	-fx-font-size: 12px;
+}
+
+/* -----------------------------------------
+   LABELS
+   ----------------------------------------- */
+
+.info-label {
+	-fx-text-fill: #d7dbe2;
+	-fx-font-size: 13px;
+}
+
+.info-value {
+	-fx-text-fill: #f1f3f5;
+	-fx-font-size: 13px;
+	-fx-font-weight: bold;
+}
+
+/* -----------------------------------------
+   BUTTONS
+   ----------------------------------------- */
+
+.button {
+	-fx-background-color: #242936;
+	-fx-text-fill: #e8ebef;
+	-fx-background-radius: 7;
+	-fx-border-radius: 7;
+	-fx-padding: 8 15;
+	-fx-font-size: 13px;
+	-fx-cursor: hand;
+}
+
+.button:hover {
+	-fx-background-color: #303746;
+}
+
+.button:pressed {
+	-fx-background-color: #1d222c;
+}
+
+.primary-button {
+	-fx-background-color: #2563eb;
+	-fx-text-fill: white;
+}
+
+.primary-button:hover {
+	-fx-background-color: #3574ef;
+}
+
+.danger-button {
+	-fx-background-color: #3a2024;
+	-fx-text-fill: #ffb4b4;
+}
+
+/* -----------------------------------------
+   COMBO BOX
+   ----------------------------------------- */
+
+.combo-box {
+	-fx-background-color: #202530;
+	-fx-background-radius: 7;
+	-fx-border-color: #303746;
+	-fx-border-radius: 7;
+}
+
+.combo-box:hover {
+	-fx-border-color: #4b5568;
+}
+
+.combo-box .list-cell {
+	-fx-background-color: #202530;
+	-fx-text-fill: #e8ebef;
+}
+
+.combo-box .arrow {
+	-fx-background-color: #9aa2b1;
+}
+
+/* Dropdown */
+
+.combo-box-popup .list-view {
+	-fx-background-color: #202530;
+	-fx-border-color: #303746;
+}
+
+.combo-box-popup .list-cell {
+	-fx-background-color: #202530;
+	-fx-text-fill: #e8ebef;
+}
+
+.combo-box-popup .list-cell:hover {
+	-fx-background-color: #303746;
+}
+
+/* -----------------------------------------
+   TEXT FIELD
+   ----------------------------------------- */
+
+.text-field {
+	-fx-background-color: #202530;
+	-fx-text-fill: #f1f3f5;
+	-fx-prompt-text-fill: #6f7785;
+	-fx-background-radius: 7;
+	-fx-border-color: #303746;
+	-fx-border-radius: 7;
+	-fx-padding: 8 10;
+}
+
+.text-field:focused {
+	-fx-border-color: #2563eb;
+}
+
+/* -----------------------------------------
+   SEPARATOR
+   ----------------------------------------- */
+
+.separator .line {
+	-fx-border-color: #292f3a;
+}
+
+/* -----------------------------------------
+   PROGRESS
+   ----------------------------------------- */
+
+.progress-bar {
+	-fx-accent: #2563eb;
+}
+
+.progress-bar .track {
+	-fx-background-color: #252b35;
+}
