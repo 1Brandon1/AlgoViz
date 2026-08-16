@@ -181,3 +181,20 @@
 .progress-bar .track {
 	-fx-background-color: #252b35;
 }
+
+/* -----------------------------------------
+   ALGORITHM INFO PANEL
+   ----------------------------------------- */
+
+.info-panel {
+	-fx-background-color: #151821;
+	-fx-background-radius: 10;
+	-fx-border-color: #242936;
+	-fx-border-radius: 10;
+}
+
+.info-panel-title {
+	-fx-text-fill: #f1f3f5;
+	-fx-font-size: 16px;
+	-fx-font-weight: bold;
+}

@@ -5,6 +5,9 @@ import com.brandon.algorithms.AlgorithmType;
 import com.brandon.algorithms.SearchEngine;
 import com.brandon.algorithms.SearchType;
 import com.brandon.events.AnimationEvent;
+import com.brandon.events.CompareEvent;
+import com.brandon.events.SearchCompareEvent;
+import com.brandon.events.SwapEvent;
 import com.brandon.models.ArrayModel;
 import com.brandon.visualisation.ArrayVisualiser;
 import com.brandon.visualisation.EventPlayer;
@@ -18,7 +21,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
@@ -27,7 +29,26 @@ import java.util.List;
 
 public class MainView extends BorderPane {
 
+        // =================================================
+        // MAIN UI
+        // =================================================
+
         private final StackPane visualizationPane;
+
+        private AlgorithmInfoPanel infoPanel;
+
+        private Label algorithmLabel;
+        private Label stepLabel;
+
+        private ComboBox<String> modeSelector;
+        private ComboBox<String> sortSelector;
+        private ComboBox<String> searchSelector;
+
+        private TextField targetInput;
+
+        // =================================================
+        // DATA
+        // =================================================
 
         private ArrayModel currentModel;
 
@@ -41,41 +62,16 @@ public class MainView extends BorderPane {
 
         private boolean searchingMode = false;
 
-        private ComboBox<String> modeSelector;
-        private ComboBox<String> sortSelector;
-        private ComboBox<String> searchSelector;
-
-        private TextField targetInput;
-
-        private Button generateButton;
-        private Button runButton;
-        private Button stepForwardButton;
-        private Button stepBackButton;
-        private Button playPauseButton;
-
-        private Label algorithmLabel;
-        private Label arrayLabel;
-        private Label stepLabel;
-
-        private StatusBar statusBar;
+        // =================================================
+        // CONSTRUCTOR
+        // =================================================
 
         public MainView() {
 
                 visualizationPane = new StackPane();
 
-                visualizationPane
-                                .getStyleClass()
-                                .add("visualisation-container");
-
-                BorderPane.setMargin(
-                                visualizationPane,
-                                new Insets(
-                                                20,
-                                                24,
-                                                20,
-                                                24));
-
                 createLayout();
+
                 generateArray();
         }
 
@@ -92,7 +88,7 @@ public class MainView extends BorderPane {
                                 createHeader());
 
                 setCenter(
-                                createVisualisation());
+                                createMainContent());
 
                 setBottom(
                                 createControlPanel());
@@ -107,32 +103,18 @@ public class MainView extends BorderPane {
                 Label title = new Label("Algorithm Sim");
 
                 title.getStyleClass()
-                                .add("title");
+                                .add("app-title");
 
-                Label subtitle = new Label(
-                                "Interactive Algorithm Visualiser");
+                algorithmLabel = new Label("Bubble Sort");
 
-                subtitle.getStyleClass()
-                                .add("subtitle");
-
-                VBox titleBox = new VBox(
-                                2,
-                                title,
-                                subtitle);
-
-                statusBar = new StatusBar();
-
-                Region spacer = new Region();
-
-                HBox.setHgrow(
-                                spacer,
-                                Priority.ALWAYS);
+                algorithmLabel
+                                .getStyleClass()
+                                .add("algorithm-label");
 
                 HBox header = new HBox(
                                 15,
-                                titleBox,
-                                spacer,
-                                statusBar);
+                                title,
+                                algorithmLabel);
 
                 header.setAlignment(
                                 Pos.CENTER_LEFT);
@@ -151,15 +133,40 @@ public class MainView extends BorderPane {
         }
 
         // =================================================
-        // VISUALISATION
+        // MAIN CONTENT
         // =================================================
 
-        private StackPane createVisualisation() {
+        private HBox createMainContent() {
 
                 visualizationPane.setPadding(
                                 new Insets(30));
 
-                return visualizationPane;
+                visualizationPane
+                                .getStyleClass()
+                                .add("visualisation-container");
+
+                infoPanel = new AlgorithmInfoPanel();
+
+                infoPanel.setPrefWidth(230);
+                infoPanel.setMinWidth(230);
+
+                HBox container = new HBox(
+                                20,
+                                visualizationPane,
+                                infoPanel);
+
+                HBox.setHgrow(
+                                visualizationPane,
+                                Priority.ALWAYS);
+
+                container.setPadding(
+                                new Insets(
+                                                20,
+                                                24,
+                                                20,
+                                                24));
+
+                return container;
         }
 
         // =================================================
@@ -167,27 +174,6 @@ public class MainView extends BorderPane {
         // =================================================
 
         private VBox createControlPanel() {
-
-                VBox panel = new VBox(15);
-
-                panel.setPadding(
-                                new Insets(
-                                                18,
-                                                24,
-                                                20,
-                                                24));
-
-                panel.getStyleClass()
-                                .add("control-panel");
-
-                // ---------------------------------------------
-                // SECTION TITLE
-                // ---------------------------------------------
-
-                Label algorithmTitle = new Label("ALGORITHM");
-
-                algorithmTitle.getStyleClass()
-                                .add("section-title");
 
                 // ---------------------------------------------
                 // MODE
@@ -202,12 +188,11 @@ public class MainView extends BorderPane {
                 modeSelector.setValue(
                                 "Sorting");
 
-                modeSelector.setPrefWidth(140);
-
-                modeSelector.setOnAction(e -> updateMode());
+                modeSelector.setOnAction(
+                                e -> updateMode());
 
                 // ---------------------------------------------
-                // SORTING SELECTOR
+                // SORTING
                 // ---------------------------------------------
 
                 sortSelector = new ComboBox<>();
@@ -217,18 +202,16 @@ public class MainView extends BorderPane {
                                 "Selection Sort",
                                 "Insertion Sort",
                                 "Merge Sort",
-                                "Quick Sort",
-                                "Heap Sort");
+                                "Quick Sort");
 
                 sortSelector.setValue(
                                 "Bubble Sort");
 
-                sortSelector.setPrefWidth(170);
-
-                sortSelector.setOnAction(e -> updateSortingAlgorithm());
+                sortSelector.setOnAction(
+                                e -> updateSortingAlgorithm());
 
                 // ---------------------------------------------
-                // SEARCH SELECTOR
+                // SEARCHING
                 // ---------------------------------------------
 
                 searchSelector = new ComboBox<>();
@@ -242,9 +225,11 @@ public class MainView extends BorderPane {
                 searchSelector.setValue(
                                 "Linear Search");
 
-                searchSelector.setPrefWidth(190);
+                searchSelector.setOnAction(
+                                e -> updateSearchAlgorithm());
 
-                searchSelector.setOnAction(e -> updateSearchAlgorithm());
+                searchSelector.setVisible(false);
+                searchSelector.setManaged(false);
 
                 // ---------------------------------------------
                 // TARGET
@@ -257,118 +242,132 @@ public class MainView extends BorderPane {
 
                 targetInput.setPrefWidth(100);
 
+                targetInput.setVisible(false);
+                targetInput.setManaged(false);
+
+                // ---------------------------------------------
+                // BUTTONS
+                // ---------------------------------------------
+
+                Button generate = new Button("Generate");
+
+                Button run = new Button("Run");
+
+                Button stepBack = new Button("←");
+
+                Button playPause = new Button("▶");
+
+                Button stepForward = new Button("→");
+
+                generate.getStyleClass()
+                                .add("control-button");
+
+                run.getStyleClass()
+                                .add("primary-button");
+
+                stepBack.getStyleClass()
+                                .add("control-button");
+
+                playPause.getStyleClass()
+                                .add("play-button");
+
+                stepForward.getStyleClass()
+                                .add("control-button");
+
+                // ---------------------------------------------
+                // STEP LABEL
+                // ---------------------------------------------
+
+                stepLabel = new Label("Step 0 / 0");
+
+                stepLabel.getStyleClass()
+                                .add("step-label");
+
+                // ---------------------------------------------
+                // ACTIONS
+                // ---------------------------------------------
+
+                generate.setOnAction(
+                                e -> generateArray());
+
+                run.setOnAction(
+                                e -> runAlgorithm());
+
+                stepForward.setOnAction(
+                                e -> stepForward());
+
+                stepBack.setOnAction(
+                                e -> stepBack());
+
+                playPause.setOnAction(
+                                e -> {
+
+                                        if (!EventPlayer
+                                                        .getController()
+                                                        .isPlaying()) {
+
+                                                EventPlayer.play();
+
+                                                playPause.setText("❚❚");
+
+                                        } else {
+
+                                                EventPlayer
+                                                                .getController()
+                                                                .pause();
+
+                                                playPause.setText("▶");
+                                        }
+                                });
+
                 // ---------------------------------------------
                 // TOP CONTROL ROW
                 // ---------------------------------------------
 
-                HBox algorithmRow = new HBox(
+                HBox selectors = new HBox(
                                 10,
                                 modeSelector,
                                 sortSelector,
                                 searchSelector,
                                 targetInput);
 
-                algorithmRow.setAlignment(
+                selectors.setAlignment(
                                 Pos.CENTER_LEFT);
 
                 // ---------------------------------------------
-                // PLAYBACK
+                // BOTTOM CONTROL ROW
                 // ---------------------------------------------
 
-                generateButton = new Button("Generate");
-
-                runButton = new Button("Run");
-
-                stepBackButton = new Button("←");
-
-                playPauseButton = new Button("▶ Play");
-
-                stepForwardButton = new Button("→");
-
-                generateButton
-                                .getStyleClass()
-                                .add("button");
-
-                runButton
-                                .getStyleClass()
-                                .add("primary-button");
-
-                // ---------------------------------------------
-                // BUTTON ACTIONS
-                // ---------------------------------------------
-
-                generateButton.setOnAction(
-                                e -> generateArray());
-
-                runButton.setOnAction(
-                                e -> runAlgorithm());
-
-                stepForwardButton.setOnAction(
-                                e -> stepForward());
-
-                stepBackButton.setOnAction(
-                                e -> stepBack());
-
-                playPauseButton.setOnAction(
-                                e -> togglePlayPause());
-
-                // ---------------------------------------------
-                // PLAYBACK ROW
-                // ---------------------------------------------
-
-                HBox playbackRow = new HBox(
+                HBox controls = new HBox(
                                 10,
-                                generateButton,
-                                runButton,
-                                stepBackButton,
-                                playPauseButton,
-                                stepForwardButton);
-
-                playbackRow.setAlignment(
-                                Pos.CENTER_LEFT);
-
-                // ---------------------------------------------
-                // INFO
-                // ---------------------------------------------
-
-                algorithmLabel = new Label(
-                                "Bubble Sort");
-
-                algorithmLabel.getStyleClass()
-                                .add("info-value");
-
-                arrayLabel = new Label(
-                                "Array: 25 elements");
-
-                arrayLabel.getStyleClass()
-                                .add("info-label");
-
-                stepLabel = new Label(
-                                "Step: 0");
-
-                stepLabel.getStyleClass()
-                                .add("info-label");
-
-                HBox infoRow = new HBox(
-                                25,
-                                algorithmLabel,
-                                arrayLabel,
+                                generate,
+                                run,
+                                stepBack,
+                                playPause,
+                                stepForward,
                                 stepLabel);
 
-                infoRow.setAlignment(
+                controls.setAlignment(
                                 Pos.CENTER_LEFT);
 
                 // ---------------------------------------------
-                // ADD EVERYTHING
+                // PANEL
                 // ---------------------------------------------
 
-                panel.getChildren().addAll(
-                                algorithmTitle,
-                                algorithmRow,
-                                playbackRow,
-                                infoRow);
+                VBox panel = new VBox(
+                                10,
+                                selectors,
+                                controls);
 
-                updateMode();
+                panel.setPadding(
+                                new Insets(
+                                                16,
+                                                24,
+                                                18,
+                                                24));
+
+                panel.getStyleClass()
+                                .add("control-panel");
 
                 return panel;
         }
@@ -383,43 +382,56 @@ public class MainView extends BorderPane {
                                 .getValue()
                                 .equals("Searching");
 
-                searchSelector.setVisible(
-                                searchingMode);
+                EventPlayer.stop();
 
-                searchSelector.setManaged(
-                                searchingMode);
+                EventPlayer
+                                .getController()
+                                .reset();
 
-                sortSelector.setVisible(
-                                !searchingMode);
-
-                sortSelector.setManaged(
-                                !searchingMode);
-
-                targetInput.setVisible(
-                                searchingMode);
-
-                targetInput.setManaged(
-                                searchingMode);
+                events = null;
 
                 if (searchingMode) {
+
+                        sortSelector.setVisible(false);
+                        sortSelector.setManaged(false);
+
+                        searchSelector.setVisible(true);
+                        searchSelector.setManaged(true);
+
+                        targetInput.setVisible(true);
+                        targetInput.setManaged(true);
 
                         algorithmLabel.setText(
                                         getSearchDisplayName());
 
+                        infoPanel.setAlgorithm(
+                                        getSearchDisplayName());
+
                 } else {
+
+                        sortSelector.setVisible(true);
+                        sortSelector.setManaged(true);
+
+                        searchSelector.setVisible(false);
+                        searchSelector.setManaged(false);
+
+                        targetInput.setVisible(false);
+                        targetInput.setManaged(false);
 
                         algorithmLabel.setText(
                                         getSortDisplayName());
+
+                        infoPanel.setAlgorithm(
+                                        getSortDisplayName());
                 }
 
-                statusBar.setStatus(
-                                searchingMode
-                                                ? "Search mode"
-                                                : "Sorting mode");
+                infoPanel.resetStatistics();
+
+                updateStepLabel();
         }
 
         // =================================================
-        // SORTING SELECTION
+        // SORTING ALGORITHM
         // =================================================
 
         private void updateSortingAlgorithm() {
@@ -438,19 +450,23 @@ public class MainView extends BorderPane {
                         case "Quick Sort" ->
                                 selectedAlgorithm = AlgorithmType.QUICK_SORT;
 
-                        case "Heap Sort" ->
-                                selectedAlgorithm = AlgorithmType.HEAP_SORT;
-
                         default ->
                                 selectedAlgorithm = AlgorithmType.BUBBLE_SORT;
                 }
 
                 algorithmLabel.setText(
                                 getSortDisplayName());
+
+                infoPanel.setAlgorithm(
+                                getSortDisplayName());
+
+                infoPanel.resetStatistics();
+
+                clearEvents();
         }
 
         // =================================================
-        // SEARCH SELECTION
+        // SEARCH ALGORITHM
         // =================================================
 
         private void updateSearchAlgorithm() {
@@ -472,6 +488,13 @@ public class MainView extends BorderPane {
 
                 algorithmLabel.setText(
                                 getSearchDisplayName());
+
+                infoPanel.setAlgorithm(
+                                getSearchDisplayName());
+
+                infoPanel.resetStatistics();
+
+                clearEvents();
         }
 
         // =================================================
@@ -480,62 +503,47 @@ public class MainView extends BorderPane {
 
         private void runAlgorithm() {
 
-                if (currentModel == null) {
-                        return;
-                }
+                EventPlayer.stop();
 
-                try {
+                if (searchingMode) {
 
-                        if (searchingMode) {
+                        String targetText = targetInput.getText().trim();
 
-                                if (targetInput.getText()
-                                                .isBlank()) {
-
-                                        statusBar.setStatus(
-                                                        "Enter a target value");
-
-                                        return;
-                                }
-
-                                int target = Integer.parseInt(
-                                                targetInput
-                                                                .getText()
-                                                                .trim());
-
-                                events = SearchEngine.run(
-                                                selectedSearch,
-                                                currentModel
-                                                                .getValues(),
-                                                target);
-
-                                statusBar.setStatus(
-                                                "Search ready");
-
-                        } else {
-
-                                events = AlgorithmEngine.run(
-                                                selectedAlgorithm,
-                                                currentModel
-                                                                .getValues());
-
-                                statusBar.setStatus(
-                                                "Sort ready");
+                        if (targetText.isEmpty()) {
+                                return;
                         }
 
-                        EventPlayer.load(
-                                        events,
-                                        visualiser);
+                        int target;
 
-                        updateStepLabel();
+                        try {
 
-                        playPauseButton.setText(
-                                        "▶ Play");
+                                target = Integer.parseInt(
+                                                targetText);
 
-                } catch (NumberFormatException ex) {
+                        } catch (NumberFormatException e) {
 
-                        statusBar.setStatus(
-                                        "Target must be a number");
+                                return;
+                        }
+
+                        events = SearchEngine.run(
+                                        selectedSearch,
+                                        currentModel.getValues(),
+                                        target);
+
+                } else {
+
+                        events = AlgorithmEngine.run(
+                                        selectedAlgorithm,
+                                        currentModel.getValues());
                 }
+
+                EventPlayer.load(
+                                events,
+                                visualiser);
+
+                updateStepLabel();
+
+                updateStatistics();
         }
 
         // =================================================
@@ -547,15 +555,14 @@ public class MainView extends BorderPane {
                 if (events == null ||
                                 events.isEmpty()) {
 
-                        statusBar.setStatus(
-                                        "Run an algorithm first");
-
                         return;
                 }
 
                 EventPlayer.stepForward();
 
                 updateStepLabel();
+
+                updateStatistics();
         }
 
         // =================================================
@@ -573,51 +580,12 @@ public class MainView extends BorderPane {
                 EventPlayer.stepBack();
 
                 updateStepLabel();
+
+                updateStatistics();
         }
 
         // =================================================
-        // PLAY / PAUSE
-        // =================================================
-
-        private void togglePlayPause() {
-
-                if (events == null ||
-                                events.isEmpty()) {
-
-                        statusBar.setStatus(
-                                        "Run an algorithm first");
-
-                        return;
-                }
-
-                if (!EventPlayer
-                                .getController()
-                                .isPlaying()) {
-
-                        EventPlayer.play();
-
-                        playPauseButton.setText(
-                                        "Ⅱ Pause");
-
-                        statusBar.setStatus(
-                                        "Playing");
-
-                } else {
-
-                        EventPlayer
-                                        .getController()
-                                        .pause();
-
-                        playPauseButton.setText(
-                                        "▶ Play");
-
-                        statusBar.setStatus(
-                                        "Paused");
-                }
-        }
-
-        // =================================================
-        // GENERATE
+        // GENERATE ARRAY
         // =================================================
 
         private void generateArray() {
@@ -628,8 +596,7 @@ public class MainView extends BorderPane {
 
                 System.out.println(
                                 Arrays.toString(
-                                                currentModel
-                                                                .getValues()));
+                                                currentModel.getValues()));
 
                 visualiser = new ArrayVisualiser(
                                 currentModel);
@@ -649,42 +616,109 @@ public class MainView extends BorderPane {
                                 .getController()
                                 .reset();
 
-                playPauseButton.setText(
-                                "▶ Play");
+                infoPanel.setAlgorithm(
+                                searchingMode
+                                                ? getSearchDisplayName()
+                                                : getSortDisplayName());
+
+                infoPanel.resetStatistics();
 
                 updateStepLabel();
-
-                arrayLabel.setText(
-                                "Array: "
-                                                + currentModel
-                                                                .getValues().length
-                                                + " elements");
-
-                statusBar.setStatus(
-                                "New array generated");
         }
 
         // =================================================
-        // STEP INFORMATION
+        // CLEAR EVENTS
         // =================================================
 
-        private void updateStepLabel() {
+        private void clearEvents() {
+
+                EventPlayer.stop();
+
+                EventPlayer
+                                .getController()
+                                .reset();
+
+                events = null;
+
+                if (visualiser != null) {
+                        visualiser.reset();
+                }
+
+                updateStepLabel();
+        }
+
+        // =================================================
+        // STATISTICS
+        // =================================================
+
+        private void updateStatistics() {
 
                 if (events == null) {
 
-                        stepLabel.setText(
-                                        "Step: 0");
+                        infoPanel.resetStatistics();
 
                         return;
                 }
 
+                int currentStep = EventPlayer
+                                .getController()
+                                .getCurrentIndex();
+
+                int comparisons = 0;
+                int swaps = 0;
+
+                int limit = Math.min(
+                                currentStep,
+                                events.size());
+
+                for (int i = 0; i < limit; i++) {
+
+                        AnimationEvent event = events.get(i);
+
+                        if (event instanceof CompareEvent) {
+
+                                comparisons++;
+
+                        } else if (event instanceof SearchCompareEvent) {
+
+                                comparisons++;
+
+                        } else if (event instanceof SwapEvent) {
+
+                                swaps++;
+                        }
+                }
+
+                infoPanel.setStatistics(
+                                comparisons,
+                                swaps,
+                                currentStep,
+                                events.size());
+        }
+
+        // =================================================
+        // STEP LABEL
+        // =================================================
+
+        private void updateStepLabel() {
+
+                if (stepLabel == null) {
+                        return;
+                }
+
+                int current = EventPlayer
+                                .getController()
+                                .getCurrentIndex();
+
+                int total = events == null
+                                ? 0
+                                : events.size();
+
                 stepLabel.setText(
-                                "Step: "
-                                                + EventPlayer
-                                                                .getController()
-                                                                .getCurrentIndex()
+                                "Step "
+                                                + current
                                                 + " / "
-                                                + events.size());
+                                                + total);
         }
 
         // =================================================
