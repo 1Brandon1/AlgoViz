@@ -18,10 +18,37 @@ public class EventPlayer {
 
     private static Timeline timeline;
 
+    private static Runnable updateListener;
+
+    // =================================================
+    // CONTROLLER
+    // =================================================
+
     public static PlaybackController getController() {
 
         return controller;
     }
+
+    // =================================================
+    // UPDATE LISTENER
+    // =================================================
+
+    public static void setUpdateListener(
+            Runnable listener) {
+
+        updateListener = listener;
+    }
+
+    private static void notifyUpdate() {
+
+        if (updateListener != null) {
+            updateListener.run();
+        }
+    }
+
+    // =================================================
+    // LOAD
+    // =================================================
 
     public static void load(
             List<AnimationEvent> newEvents,
@@ -35,39 +62,69 @@ public class EventPlayer {
 
         controller.reset();
 
-        visualiser.reset();
+        if (visualiser != null) {
+            visualiser.reset();
+        }
+
+        notifyUpdate();
     }
+
+    // =================================================
+    // STEP FORWARD
+    // =================================================
 
     public static void stepForward() {
 
-        if (events == null || visualiser == null) {
+        if (events == null ||
+                visualiser == null) {
+
             return;
         }
 
         if (controller.getCurrentIndex() >= events.size()) {
+
             return;
         }
 
+        AnimationEvent event = events.get(
+                controller.getCurrentIndex());
+
         applyEvent(
-                events.get(controller.getCurrentIndex()));
+                event,
+                visualiser);
 
         controller.next();
+
+        notifyUpdate();
     }
+
+    // =================================================
+    // STEP BACK
+    // =================================================
 
     public static void stepBack() {
 
-        if (events == null || visualiser == null) {
+        if (events == null ||
+                visualiser == null) {
+
             return;
         }
 
         if (controller.getCurrentIndex() <= 0) {
+
             return;
         }
 
         controller.previous();
 
         rebuild();
+
+        notifyUpdate();
     }
+
+    // =================================================
+    // REBUILD
+    // =================================================
 
     private static void rebuild() {
 
@@ -78,18 +135,100 @@ public class EventPlayer {
         for (int i = 0; i < target; i++) {
 
             applyEvent(
-                    events.get(i));
+                    events.get(i),
+                    visualiser);
         }
     }
 
+    // =================================================
+    // PLAY
+    // =================================================
+
+    public static void play() {
+
+        if (events == null ||
+                visualiser == null ||
+                events.isEmpty()) {
+
+            return;
+        }
+
+        if (controller.getCurrentIndex() >= events.size()) {
+
+            return;
+        }
+
+        controller.play();
+
+        timeline = new Timeline(
+                new KeyFrame(
+                        Duration.millis(40),
+                        e -> playNext()));
+
+        timeline.setCycleCount(
+                Timeline.INDEFINITE);
+
+        timeline.play();
+    }
+
+    // =================================================
+    // PLAY NEXT
+    // =================================================
+
+    private static void playNext() {
+
+        if (!controller.isPlaying()) {
+
+            return;
+        }
+
+        if (events == null ||
+                controller.getCurrentIndex() >= events.size()) {
+
+            stop();
+
+            return;
+        }
+
+        stepForward();
+    }
+
+    // =================================================
+    // STOP
+    // =================================================
+
+    public static void stop() {
+
+        if (timeline != null) {
+
+            timeline.stop();
+
+            timeline = null;
+        }
+
+        controller.pause();
+
+        notifyUpdate();
+    }
+
+    // =================================================
+    // APPLY EVENT
+    // =================================================
+
     private static void applyEvent(
-            AnimationEvent event) {
+            AnimationEvent event,
+            ArrayVisualiser visualiser) {
 
         if (event instanceof CompareEvent compare) {
 
             visualiser.compare(
                     compare.getFirstIndex(),
                     compare.getSecondIndex());
+
+        } else if (event instanceof SearchCompareEvent searchCompare) {
+
+            visualiser.searchCompare(
+                    searchCompare.getIndex());
 
         } else if (event instanceof SwapEvent swap) {
 
@@ -134,58 +273,6 @@ public class EventPlayer {
             visualiser.setSearchRange(
                     range.getLeft(),
                     range.getRight());
-        }
-    }
-
-    public static void play() {
-
-        if (events == null || visualiser == null) {
-            return;
-        }
-
-        stop();
-
-        controller.play();
-
-        timeline = new Timeline(
-
-                new KeyFrame(
-                        Duration.millis(40),
-
-                        e -> {
-
-                            if (!controller.isPlaying()) {
-
-                                stop();
-
-                                return;
-                            }
-
-                            if (controller.getCurrentIndex() >= events.size()) {
-
-                                stop();
-
-                                return;
-                            }
-
-                            stepForward();
-                        }));
-
-        timeline.setCycleCount(
-                Timeline.INDEFINITE);
-
-        timeline.play();
-    }
-
-    public static void stop() {
-
-        controller.pause();
-
-        if (timeline != null) {
-
-            timeline.stop();
-
-            timeline = null;
         }
     }
 }

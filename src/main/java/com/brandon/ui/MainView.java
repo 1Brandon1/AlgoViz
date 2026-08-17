@@ -70,6 +70,9 @@ public class MainView extends BorderPane {
 
                 visualizationPane = new StackPane();
 
+                EventPlayer.setUpdateListener(
+                                this::updateStatistics);
+
                 createLayout();
 
                 generateArray();
@@ -299,26 +302,23 @@ public class MainView extends BorderPane {
                 stepBack.setOnAction(
                                 e -> stepBack());
 
-                playPause.setOnAction(
-                                e -> {
+                playPause.setOnAction(e -> {
 
-                                        if (!EventPlayer
-                                                        .getController()
-                                                        .isPlaying()) {
+                        if (!EventPlayer
+                                        .getController()
+                                        .isPlaying()) {
 
-                                                EventPlayer.play();
+                                EventPlayer.play();
 
-                                                playPause.setText("❚❚");
+                                playPause.setText("❚❚");
 
-                                        } else {
+                        } else {
 
-                                                EventPlayer
-                                                                .getController()
-                                                                .pause();
+                                EventPlayer.stop();
 
-                                                playPause.setText("▶");
-                                        }
-                                });
+                                playPause.setText("▶");
+                        }
+                });
 
                 // ---------------------------------------------
                 // TOP CONTROL ROW
@@ -652,6 +652,8 @@ public class MainView extends BorderPane {
         // =================================================
 
         private void updateStatistics() {
+
+                updateStepLabel();
 
                 if (events == null) {
 
