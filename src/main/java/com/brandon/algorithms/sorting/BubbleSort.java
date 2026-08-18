@@ -3,6 +3,7 @@ package com.brandon.algorithms.sorting;
 import com.brandon.algorithms.SortingAlgorithm;
 import com.brandon.events.AnimationEvent;
 import com.brandon.events.CompareEvent;
+import com.brandon.events.SortCompleteEvent;
 import com.brandon.events.SortedEvent;
 import com.brandon.events.SwapEvent;
 
@@ -38,6 +39,7 @@ public class BubbleSort implements SortingAlgorithm {
         }
 
         events.add(new SortedEvent(0));
+        events.add(new SortCompleteEvent());
 
         return events;
     }

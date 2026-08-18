@@ -5,6 +5,7 @@ import com.brandon.events.AnimationEvent;
 import com.brandon.events.CompareEvent;
 import com.brandon.events.SortedEvent;
 import com.brandon.events.OverwriteEvent;
+import com.brandon.events.SortCompleteEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ public class MergeSort implements SortingAlgorithm {
         for (int i = 0; i < copy.length; i++) {
             events.add(new SortedEvent(i));
         }
+        events.add(new SortCompleteEvent());
 
         return events;
     }

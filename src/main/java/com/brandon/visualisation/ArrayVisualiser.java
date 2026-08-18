@@ -6,6 +6,8 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.animation.ScaleTransition;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,12 +19,30 @@ public class ArrayVisualiser extends HBox {
 
     private static final double BAR_WIDTH = 22;
 
+    private static final Color BAR_DEFAULT = Color.web("#64748B");
+    private static final Color BAR_COMPARE = Color.web("#F59E0B");
+    private static final Color BAR_PIVOT = Color.web("#8B5CF6");
+    private static final Color BAR_SORTED = Color.web("#10B981");
+    private static final Color BAR_FOUND = Color.web("#22C55E");
+    private static final Color BAR_NOT_FOUND = Color.web("#EF4444");
+    private static final Color BAR_OUTSIDE = Color.web("#334155");
+
+    // -------------------------------------------------
+    // DATA
+    // -------------------------------------------------
+
     private final List<Rectangle> bars = new ArrayList<>();
 
     private final int[] originalValues;
+
     private final int[] currentValues;
 
+    // -------------------------------------------------
+    // STATES
+    // -------------------------------------------------
+
     private final Set<Integer> sorted = new HashSet<>();
+
     private final Set<Integer> compared = new HashSet<>();
 
     private IntConsumer barClickListener;
@@ -30,11 +50,17 @@ public class ArrayVisualiser extends HBox {
     private Integer pivot = null;
 
     private Integer searchLeft = null;
+
     private Integer searchRight = null;
+
+    // -------------------------------------------------
+    // CONSTRUCTOR
+    // -------------------------------------------------
 
     public ArrayVisualiser(ArrayModel model) {
 
         originalValues = model.getValues().clone();
+
         currentValues = originalValues.clone();
 
         setAlignment(Pos.BOTTOM_CENTER);
@@ -55,8 +81,15 @@ public class ArrayVisualiser extends HBox {
 
             Rectangle bar = new Rectangle();
 
-            bar.setWidth(BAR_WIDTH);
-            bar.setHeight(currentValues[i]);
+            bar.setWidth(
+                    BAR_WIDTH);
+
+            bar.setHeight(
+                    currentValues[i]);
+
+            // Rounded corners
+            bar.setArcWidth(6);
+            bar.setArcHeight(6);
 
             bars.add(bar);
 
@@ -64,20 +97,67 @@ public class ArrayVisualiser extends HBox {
 
             final int index = i;
 
+            // -------------------------------------------------
+            // CLICK
+            // -------------------------------------------------
+
             bar.setOnMouseClicked(e -> {
 
                 if (barClickListener != null) {
-                    barClickListener.accept(index);
+
+                    barClickListener.accept(
+                            index);
                 }
+            });
+
+            // -------------------------------------------------
+            // HOVER
+            // -------------------------------------------------
+
+            ScaleTransition scaleUp = new ScaleTransition(
+                    Duration.millis(120),
+                    bar);
+
+            scaleUp.setToX(1.04);
+            scaleUp.setToY(1.04);
+
+            ScaleTransition scaleDown = new ScaleTransition(
+                    Duration.millis(120),
+                    bar);
+
+            scaleDown.setToX(1.0);
+            scaleDown.setToY(1.0);
+
+            bar.setOnMouseEntered(e -> {
+
+                scaleDown.stop();
+
+                scaleUp.playFromStart();
+
+                bar.setOpacity(0.9);
+            });
+
+            bar.setOnMouseExited(e -> {
+
+                scaleUp.stop();
+
+                scaleDown.playFromStart();
+
+                bar.setOpacity(1.0);
             });
         }
     }
+
+    // -------------------------------------------------
+    // SORT BARS
+    // -------------------------------------------------
 
     public void sortBars() {
 
         List<Integer> values = new ArrayList<>();
 
         for (int value : currentValues) {
+
             values.add(value);
         }
 
@@ -195,7 +275,7 @@ public class ArrayVisualiser extends HBox {
     }
 
     // -------------------------------------------------
-    // SEARCH COMPARISON
+    // SEARCH RANGE
     // -------------------------------------------------
 
     public void setSearchRange(
@@ -203,12 +283,17 @@ public class ArrayVisualiser extends HBox {
             int right) {
 
         searchLeft = left;
+
         searchRight = right;
 
         compared.clear();
 
         render();
     }
+
+    // -------------------------------------------------
+    // SEARCH COMPARISON
+    // -------------------------------------------------
 
     public void searchCompare(
             int index) {
@@ -224,11 +309,14 @@ public class ArrayVisualiser extends HBox {
     // FOUND
     // -------------------------------------------------
 
-    public void markFound(int index) {
+    public void markFound(
+            int index) {
 
         compared.clear();
 
-        bars.get(index).setFill(Color.LIMEGREEN);
+        bars.get(index)
+                .setFill(
+                        BAR_FOUND);
     }
 
     // -------------------------------------------------
@@ -238,17 +326,39 @@ public class ArrayVisualiser extends HBox {
     public void markNotFound() {
 
         compared.clear();
-        render();
+
+        pivot = null;
+
+        searchLeft = null;
+
+        searchRight = null;
+
+        for (Rectangle bar : bars) {
+
+            bar.setFill(
+                    BAR_NOT_FOUND);
+        }
     }
 
     // -------------------------------------------------
     // SORTED
     // -------------------------------------------------
 
-    public void markSorted(
-            int index) {
+    public void markSorted(int index) {
 
         sorted.add(index);
+
+        render();
+    }
+
+    public void markSortComplete() {
+
+        sorted.clear();
+
+        for (int i = 0; i < bars.size(); i++) {
+
+            sorted.add(i);
+        }
 
         render();
     }
@@ -286,36 +396,57 @@ public class ArrayVisualiser extends HBox {
 
             Rectangle bar = bars.get(i);
 
-            // Outside active Binary Search range
+            // -----------------------------------------
+            // OUTSIDE SEARCH RANGE
+            // -----------------------------------------
+
             if (searchLeft != null &&
                     searchRight != null &&
                     (i < searchLeft ||
                             i > searchRight)) {
 
-                bar.setFill(Color.LIGHTGRAY);
+                bar.setFill(
+                        BAR_OUTSIDE);
+
                 continue;
             }
 
-            // Sorted
+            // -----------------------------------------
+            // SORTED
+            // -----------------------------------------
+
             if (sorted.contains(i)) {
 
-                bar.setFill(Color.LIMEGREEN);
+                bar.setFill(
+                        BAR_SORTED);
 
-                // Pivot
+                // -----------------------------------------
+                // PIVOT
+                // -----------------------------------------
+
             } else if (pivot != null &&
                     pivot == i) {
 
-                bar.setFill(Color.MEDIUMPURPLE);
+                bar.setFill(
+                        BAR_PIVOT);
 
-                // Current comparison
+                // -----------------------------------------
+                // COMPARISON
+                // -----------------------------------------
+
             } else if (compared.contains(i)) {
 
-                bar.setFill(Color.ORANGE);
+                bar.setFill(
+                        BAR_COMPARE);
 
-                // Normal
+                // -----------------------------------------
+                // DEFAULT
+                // -----------------------------------------
+
             } else {
 
-                bar.setFill(Color.CORNFLOWERBLUE);
+                bar.setFill(
+                        BAR_DEFAULT);
             }
         }
     }

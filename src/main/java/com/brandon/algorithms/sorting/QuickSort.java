@@ -3,6 +3,7 @@ package com.brandon.algorithms.sorting;
 import com.brandon.algorithms.SortingAlgorithm;
 import com.brandon.events.AnimationEvent;
 import com.brandon.events.CompareEvent;
+import com.brandon.events.SortCompleteEvent;
 import com.brandon.events.SortedEvent;
 import com.brandon.events.SwapEvent;
 
@@ -19,6 +20,7 @@ public class QuickSort implements SortingAlgorithm {
 
         quickSort(copy, 0, copy.length - 1, events);
 
+        events.add(new SortCompleteEvent());
         return events;
     }
 
