@@ -8,33 +8,33 @@ import javafx.stage.Stage;
 
 public class App extends Application {
 
-    @Override
-    public void start(Stage stage) {
+        @Override
+        public void start(Stage stage) {
 
-        MainView mainView = new MainView();
+                MainView mainView = new MainView();
 
-        Scene scene = new Scene(
-                mainView,
-                1200,
-                800);
+                Scene scene = new Scene(
+                                mainView,
+                                1200,
+                                800);
 
-        String css = getClass()
-                .getResource(
-                        "/styles/application.css")
-                .toExternalForm();
+                String css = getClass()
+                                .getResource(
+                                                "/styles/application.css")
+                                .toExternalForm();
 
-        scene.getStylesheets()
-                .add(css);
+                scene.getStylesheets()
+                                .add(css);
 
-        stage.setTitle("Algorithm Sim");
+                stage.setTitle("AlgoViz");
 
-        stage.setScene(scene);
+                stage.setScene(scene);
 
-        stage.show();
-    }
+                stage.show();
+        }
 
-    public static void main(String[] args) {
+        public static void main(String[] args) {
 
-        launch();
-    }
+                launch();
+        }
 }

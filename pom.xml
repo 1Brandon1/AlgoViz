@@ -7,7 +7,7 @@
 
     <!-- Project Identity -->
     <groupId>com.brandon</groupId>
-    <artifactId>algorithm-sim</artifactId>
+    <artifactId>algo-viz</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <!-- Java Version -->

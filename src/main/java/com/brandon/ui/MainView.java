@@ -104,7 +104,7 @@ public class MainView extends BorderPane {
 
         private HBox createHeader() {
 
-                Label title = new Label("Algorithm Sim");
+                Label title = new Label("AlgoViz");
 
                 title.getStyleClass()
                                 .add("title");
