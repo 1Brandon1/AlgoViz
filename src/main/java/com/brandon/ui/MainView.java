@@ -21,6 +21,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
@@ -37,7 +38,6 @@ public class MainView extends BorderPane {
 
         private AlgorithmInfoPanel infoPanel;
 
-        private Label algorithmLabel;
         private Label stepLabel;
 
         private ComboBox<String> modeSelector;
@@ -45,6 +45,7 @@ public class MainView extends BorderPane {
         private ComboBox<String> searchSelector;
 
         private TextField targetInput;
+        private StatusBar statusBar;
 
         // =================================================
         // DATA
@@ -106,18 +107,33 @@ public class MainView extends BorderPane {
                 Label title = new Label("Algorithm Sim");
 
                 title.getStyleClass()
-                                .add("app-title");
+                                .add("title");
 
-                algorithmLabel = new Label("Bubble Sort");
+                Label subtitle = new Label(
+                                "Interactive Algorithm Visualiser");
 
-                algorithmLabel
-                                .getStyleClass()
-                                .add("algorithm-label");
+                subtitle.getStyleClass()
+                                .add("subtitle");
+
+                VBox titleBox = new VBox(
+                                2,
+                                title,
+                                subtitle);
+
+                statusBar = new StatusBar();
+
+                Region spacer = new Region();
+
+                // Pushes the status bar to the right
+                HBox.setHgrow(
+                                spacer,
+                                Priority.ALWAYS);
 
                 HBox header = new HBox(
                                 15,
-                                title,
-                                algorithmLabel);
+                                titleBox,
+                                spacer,
+                                statusBar);
 
                 header.setAlignment(
                                 Pos.CENTER_LEFT);
@@ -401,9 +417,6 @@ public class MainView extends BorderPane {
                         targetInput.setVisible(true);
                         targetInput.setManaged(true);
 
-                        algorithmLabel.setText(
-                                        getSearchDisplayName());
-
                         infoPanel.setAlgorithm(
                                         getSearchDisplayName());
 
@@ -418,12 +431,14 @@ public class MainView extends BorderPane {
                         targetInput.setVisible(false);
                         targetInput.setManaged(false);
 
-                        algorithmLabel.setText(
-                                        getSortDisplayName());
-
                         infoPanel.setAlgorithm(
                                         getSortDisplayName());
                 }
+
+                statusBar.setStatus(
+                                searchingMode
+                                                ? "Search mode"
+                                                : "Sorting mode");
 
                 infoPanel.resetStatistics();
 
@@ -454,9 +469,6 @@ public class MainView extends BorderPane {
                                 selectedAlgorithm = AlgorithmType.BUBBLE_SORT;
                 }
 
-                algorithmLabel.setText(
-                                getSortDisplayName());
-
                 infoPanel.setAlgorithm(
                                 getSortDisplayName());
 
@@ -486,9 +498,6 @@ public class MainView extends BorderPane {
                                 selectedSearch = SearchType.LINEAR_SEARCH;
                 }
 
-                algorithmLabel.setText(
-                                getSearchDisplayName());
-
                 infoPanel.setAlgorithm(
                                 getSearchDisplayName());
 
@@ -507,9 +516,14 @@ public class MainView extends BorderPane {
 
                 if (searchingMode) {
 
+                        statusBar.setStatus(
+                                        "Running " + getSearchDisplayName());
+
                         String targetText = targetInput.getText().trim();
 
                         if (targetText.isEmpty()) {
+                                statusBar.setStatus(
+                                                "Enter or click a target value");
                                 return;
                         }
 
@@ -522,6 +536,8 @@ public class MainView extends BorderPane {
 
                         } catch (NumberFormatException e) {
 
+                                statusBar.setStatus(
+                                                "Target must be a number");
                                 return;
                         }
 
@@ -531,6 +547,9 @@ public class MainView extends BorderPane {
                                         target);
 
                 } else {
+
+                        statusBar.setStatus(
+                                        "Running " + getSortDisplayName());
 
                         events = AlgorithmEngine.run(
                                         selectedAlgorithm,
@@ -601,6 +620,9 @@ public class MainView extends BorderPane {
                 visualiser = new ArrayVisualiser(
                                 currentModel);
 
+                visualiser.setBarClickListener(
+                                this::handleBarClick);
+
                 visualizationPane
                                 .getChildren()
                                 .clear();
@@ -624,6 +646,23 @@ public class MainView extends BorderPane {
                 infoPanel.resetStatistics();
 
                 updateStepLabel();
+
+                statusBar.setStatus("Ready");
+        }
+
+        private void handleBarClick(int index) {
+
+                if (!searchingMode) {
+                        return;
+                }
+
+                int value = currentModel.getValues()[index];
+
+                targetInput.setText(
+                                String.valueOf(value));
+
+                statusBar.setStatus(
+                                "Selected value: " + value);
         }
 
         // =================================================
