@@ -29,7 +29,6 @@ public class QuickSort implements SortingAlgorithm {
         if (low < high) {
 
             int pivotIndex = partition(arr, low, high, events);
-
             events.add(new SortedEvent(pivotIndex));
 
             quickSort(arr, low, pivotIndex - 1, events);
@@ -51,7 +50,6 @@ public class QuickSort implements SortingAlgorithm {
                 i++;
 
                 if (i != j) {
-
                     events.add(new SwapEvent(i, j));
                     swap(arr, i, j);
                 }
@@ -59,7 +57,6 @@ public class QuickSort implements SortingAlgorithm {
         }
 
         if (i + 1 != high) {
-
             events.add(new SwapEvent(i + 1, high));
             swap(arr, i + 1, high);
         }

@@ -6,7 +6,5 @@ import java.util.List;
 
 public interface SearchingAlgorithm {
 
-    List<AnimationEvent> generateEvents(
-            int[] array,
-            int target);
+    List<AnimationEvent> generateEvents(int[] array, int target);
 }

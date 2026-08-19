@@ -52,15 +52,11 @@ public class MainView extends BorderPane {
         // =================================================
 
         private ArrayModel currentModel;
-
         private ArrayVisualiser visualiser;
-
         private List<AnimationEvent> events;
 
         private AlgorithmType selectedAlgorithm = AlgorithmType.BUBBLE_SORT;
-
         private SearchType selectedSearch = SearchType.LINEAR_SEARCH;
-
         private boolean searchingMode = false;
 
         // =================================================
@@ -71,11 +67,9 @@ public class MainView extends BorderPane {
 
                 visualizationPane = new StackPane();
 
-                EventPlayer.setUpdateListener(
-                                this::updateStatistics);
+                EventPlayer.setUpdateListener(this::updateStatistics);
 
                 createLayout();
-
                 generateArray();
         }
 
@@ -85,17 +79,10 @@ public class MainView extends BorderPane {
 
         private void createLayout() {
 
-                setPadding(
-                                new Insets(0));
-
-                setTop(
-                                createHeader());
-
-                setCenter(
-                                createMainContent());
-
-                setBottom(
-                                createControlPanel());
+                setPadding(new Insets(0));
+                setTop(createHeader());
+                setCenter(createMainContent());
+                setBottom(createControlPanel());
         }
 
         // =================================================
@@ -105,15 +92,10 @@ public class MainView extends BorderPane {
         private HBox createHeader() {
 
                 Label title = new Label("AlgoViz");
+                title.getStyleClass().add("title");
 
-                title.getStyleClass()
-                                .add("title");
-
-                Label subtitle = new Label(
-                                "Interactive Algorithm Visualiser");
-
-                subtitle.getStyleClass()
-                                .add("subtitle");
+                Label subtitle = new Label("Interactive Algorithm Visualiser");
+                subtitle.getStyleClass().add("subtitle");
 
                 VBox titleBox = new VBox(
                                 2,
@@ -121,13 +103,10 @@ public class MainView extends BorderPane {
                                 subtitle);
 
                 statusBar = new StatusBar();
-
                 Region spacer = new Region();
 
                 // Pushes the status bar to the right
-                HBox.setHgrow(
-                                spacer,
-                                Priority.ALWAYS);
+                HBox.setHgrow(spacer, Priority.ALWAYS);
 
                 HBox header = new HBox(
                                 15,
@@ -135,8 +114,7 @@ public class MainView extends BorderPane {
                                 spacer,
                                 statusBar);
 
-                header.setAlignment(
-                                Pos.CENTER_LEFT);
+                header.setAlignment(Pos.CENTER_LEFT);
 
                 header.setPadding(
                                 new Insets(
@@ -145,8 +123,7 @@ public class MainView extends BorderPane {
                                                 18,
                                                 24));
 
-                header.getStyleClass()
-                                .add("header");
+                header.getStyleClass().add("header");
 
                 return header;
         }
@@ -157,12 +134,9 @@ public class MainView extends BorderPane {
 
         private HBox createMainContent() {
 
-                visualizationPane.setPadding(
-                                new Insets(30));
+                visualizationPane.setPadding(new Insets(30));
 
-                visualizationPane
-                                .getStyleClass()
-                                .add("visualisation-container");
+                visualizationPane.getStyleClass().add("visualisation-container");
 
                 infoPanel = new AlgorithmInfoPanel();
 
@@ -199,16 +173,9 @@ public class MainView extends BorderPane {
                 // ---------------------------------------------
 
                 modeSelector = new ComboBox<>();
-
-                modeSelector.getItems().addAll(
-                                "Sorting",
-                                "Searching");
-
-                modeSelector.setValue(
-                                "Sorting");
-
-                modeSelector.setOnAction(
-                                e -> updateMode());
+                modeSelector.getItems().addAll("Sorting", "Searching");
+                modeSelector.setValue("Sorting");
+                modeSelector.setOnAction(e -> updateMode());
 
                 // ---------------------------------------------
                 // SORTING
@@ -223,11 +190,8 @@ public class MainView extends BorderPane {
                                 "Merge Sort",
                                 "Quick Sort");
 
-                sortSelector.setValue(
-                                "Bubble Sort");
-
-                sortSelector.setOnAction(
-                                e -> updateSortingAlgorithm());
+                sortSelector.setValue("Bubble Sort");
+                sortSelector.setOnAction(e -> updateSortingAlgorithm());
 
                 // ---------------------------------------------
                 // SEARCHING
@@ -241,11 +205,8 @@ public class MainView extends BorderPane {
                                 "Jump Search",
                                 "Interpolation Search");
 
-                searchSelector.setValue(
-                                "Linear Search");
-
-                searchSelector.setOnAction(
-                                e -> updateSearchAlgorithm());
+                searchSelector.setValue("Linear Search");
+                searchSelector.setOnAction(e -> updateSearchAlgorithm());
 
                 searchSelector.setVisible(false);
                 searchSelector.setManaged(false);
@@ -256,11 +217,8 @@ public class MainView extends BorderPane {
 
                 targetInput = new TextField();
 
-                targetInput.setPromptText(
-                                "Target");
-
+                targetInput.setPromptText("Target");
                 targetInput.setPrefWidth(100);
-
                 targetInput.setVisible(false);
                 targetInput.setManaged(false);
 
@@ -269,69 +227,42 @@ public class MainView extends BorderPane {
                 // ---------------------------------------------
 
                 Button generate = new Button("Generate");
-
                 Button run = new Button("Run");
-
                 Button stepBack = new Button("←");
-
                 Button playPause = new Button("▶");
-
                 Button stepForward = new Button("→");
 
-                generate.getStyleClass()
-                                .add("control-button");
-
-                run.getStyleClass()
-                                .add("primary-button");
-
-                stepBack.getStyleClass()
-                                .add("control-button");
-
-                playPause.getStyleClass()
-                                .add("play-button");
-
-                stepForward.getStyleClass()
-                                .add("control-button");
+                generate.getStyleClass().add("control-button");
+                run.getStyleClass().add("primary-button");
+                stepBack.getStyleClass().add("control-button");
+                playPause.getStyleClass().add("play-button");
+                stepForward.getStyleClass().add("control-button");
 
                 // ---------------------------------------------
                 // STEP LABEL
                 // ---------------------------------------------
 
                 stepLabel = new Label("Step 0 / 0");
-
-                stepLabel.getStyleClass()
-                                .add("step-label");
+                stepLabel.getStyleClass().add("step-label");
 
                 // ---------------------------------------------
                 // ACTIONS
                 // ---------------------------------------------
 
-                generate.setOnAction(
-                                e -> generateArray());
-
-                run.setOnAction(
-                                e -> runAlgorithm());
-
-                stepForward.setOnAction(
-                                e -> stepForward());
-
-                stepBack.setOnAction(
-                                e -> stepBack());
+                generate.setOnAction(e -> generateArray());
+                run.setOnAction(e -> runAlgorithm());
+                stepForward.setOnAction(e -> stepForward());
+                stepBack.setOnAction(e -> stepBack());
 
                 playPause.setOnAction(e -> {
 
-                        if (!EventPlayer
-                                        .getController()
-                                        .isPlaying()) {
+                        if (!EventPlayer.getController().isPlaying()) {
 
                                 EventPlayer.play();
-
                                 playPause.setText("❚❚");
-
                         } else {
 
                                 EventPlayer.stop();
-
                                 playPause.setText("▶");
                         }
                 });
@@ -347,8 +278,7 @@ public class MainView extends BorderPane {
                                 searchSelector,
                                 targetInput);
 
-                selectors.setAlignment(
-                                Pos.CENTER_LEFT);
+                selectors.setAlignment(Pos.CENTER_LEFT);
 
                 // ---------------------------------------------
                 // BOTTOM CONTROL ROW
@@ -363,8 +293,7 @@ public class MainView extends BorderPane {
                                 stepForward,
                                 stepLabel);
 
-                controls.setAlignment(
-                                Pos.CENTER_LEFT);
+                controls.setAlignment(Pos.CENTER_LEFT);
 
                 // ---------------------------------------------
                 // PANEL
@@ -382,8 +311,7 @@ public class MainView extends BorderPane {
                                                 18,
                                                 24));
 
-                panel.getStyleClass()
-                                .add("control-panel");
+                panel.getStyleClass().add("control-panel");
 
                 return panel;
         }
@@ -394,16 +322,10 @@ public class MainView extends BorderPane {
 
         private void updateMode() {
 
-                searchingMode = modeSelector
-                                .getValue()
-                                .equals("Searching");
+                searchingMode = modeSelector.getValue().equals("Searching");
 
                 EventPlayer.stop();
-
-                EventPlayer
-                                .getController()
-                                .reset();
-
+                EventPlayer.getController().reset();
                 events = null;
 
                 if (searchingMode) {
@@ -417,8 +339,7 @@ public class MainView extends BorderPane {
                         targetInput.setVisible(true);
                         targetInput.setManaged(true);
 
-                        infoPanel.setAlgorithm(
-                                        getSearchDisplayName());
+                        infoPanel.setAlgorithm(getSearchDisplayName());
 
                 } else {
 
@@ -431,8 +352,7 @@ public class MainView extends BorderPane {
                         targetInput.setVisible(false);
                         targetInput.setManaged(false);
 
-                        infoPanel.setAlgorithm(
-                                        getSortDisplayName());
+                        infoPanel.setAlgorithm(getSortDisplayName());
                 }
 
                 statusBar.setStatus(
@@ -441,7 +361,6 @@ public class MainView extends BorderPane {
                                                 : "Sorting mode");
 
                 infoPanel.resetStatistics();
-
                 updateStepLabel();
         }
 
@@ -469,9 +388,7 @@ public class MainView extends BorderPane {
                                 selectedAlgorithm = AlgorithmType.BUBBLE_SORT;
                 }
 
-                infoPanel.setAlgorithm(
-                                getSortDisplayName());
-
+                infoPanel.setAlgorithm(getSortDisplayName());
                 infoPanel.resetStatistics();
 
                 clearEvents();
@@ -498,8 +415,7 @@ public class MainView extends BorderPane {
                                 selectedSearch = SearchType.LINEAR_SEARCH;
                 }
 
-                infoPanel.setAlgorithm(
-                                getSearchDisplayName());
+                infoPanel.setAlgorithm(getSearchDisplayName());
 
                 infoPanel.resetStatistics();
 
@@ -516,28 +432,23 @@ public class MainView extends BorderPane {
 
                 if (searchingMode) {
 
-                        statusBar.setStatus(
-                                        "Running " + getSearchDisplayName());
+                        statusBar.setStatus("Running " + getSearchDisplayName());
 
                         String targetText = targetInput.getText().trim();
 
                         if (targetText.isEmpty()) {
-                                statusBar.setStatus(
-                                                "Enter or click a target value");
+                                statusBar.setStatus("Enter or click a target value");
                                 return;
                         }
 
                         int target;
 
                         try {
-
-                                target = Integer.parseInt(
-                                                targetText);
+                                target = Integer.parseInt(targetText);
 
                         } catch (NumberFormatException e) {
 
-                                statusBar.setStatus(
-                                                "Target must be a number");
+                                statusBar.setStatus("Target must be a number");
                                 return;
                         }
 
@@ -548,20 +459,15 @@ public class MainView extends BorderPane {
 
                 } else {
 
-                        statusBar.setStatus(
-                                        "Running " + getSortDisplayName());
+                        statusBar.setStatus("Running " + getSortDisplayName());
 
                         events = AlgorithmEngine.run(
                                         selectedAlgorithm,
                                         currentModel.getValues());
                 }
 
-                EventPlayer.load(
-                                events,
-                                visualiser);
-
+                EventPlayer.load(events, visualiser);
                 updateStepLabel();
-
                 updateStatistics();
         }
 
@@ -571,16 +477,12 @@ public class MainView extends BorderPane {
 
         private void stepForward() {
 
-                if (events == null ||
-                                events.isEmpty()) {
-
+                if (events == null || events.isEmpty()) {
                         return;
                 }
 
                 EventPlayer.stepForward();
-
                 updateStepLabel();
-
                 updateStatistics();
         }
 
@@ -590,16 +492,12 @@ public class MainView extends BorderPane {
 
         private void stepBack() {
 
-                if (events == null ||
-                                events.isEmpty()) {
-
+                if (events == null || events.isEmpty()) {
                         return;
                 }
 
                 EventPlayer.stepBack();
-
                 updateStepLabel();
-
                 updateStatistics();
         }
 
@@ -610,33 +508,20 @@ public class MainView extends BorderPane {
         private void generateArray() {
 
                 EventPlayer.stop();
-
                 currentModel = new ArrayModel(25);
 
                 System.out.println(
                                 Arrays.toString(
                                                 currentModel.getValues()));
 
-                visualiser = new ArrayVisualiser(
-                                currentModel);
+                visualiser = new ArrayVisualiser(currentModel);
+                visualiser.setBarClickListener(this::handleBarClick);
 
-                visualiser.setBarClickListener(
-                                this::handleBarClick);
-
-                visualizationPane
-                                .getChildren()
-                                .clear();
-
-                visualizationPane
-                                .getChildren()
-                                .add(
-                                                visualiser);
+                visualizationPane.getChildren().clear();
+                visualizationPane.getChildren().add(visualiser);
 
                 events = null;
-
-                EventPlayer
-                                .getController()
-                                .reset();
+                EventPlayer.getController().reset();
 
                 infoPanel.setAlgorithm(
                                 searchingMode
@@ -644,9 +529,7 @@ public class MainView extends BorderPane {
                                                 : getSortDisplayName());
 
                 infoPanel.resetStatistics();
-
                 updateStepLabel();
-
                 statusBar.setStatus("Ready");
         }
 
@@ -657,12 +540,8 @@ public class MainView extends BorderPane {
                 }
 
                 int value = currentModel.getValues()[index];
-
-                targetInput.setText(
-                                String.valueOf(value));
-
-                statusBar.setStatus(
-                                "Selected value: " + value);
+                targetInput.setText(String.valueOf(value));
+                statusBar.setStatus("Selected value: " + value);
         }
 
         // =================================================
@@ -672,11 +551,7 @@ public class MainView extends BorderPane {
         private void clearEvents() {
 
                 EventPlayer.stop();
-
-                EventPlayer
-                                .getController()
-                                .reset();
-
+                EventPlayer.getController().reset();
                 events = null;
 
                 if (visualiser != null) {
@@ -697,35 +572,24 @@ public class MainView extends BorderPane {
                 if (events == null) {
 
                         infoPanel.resetStatistics();
-
                         return;
                 }
 
-                int currentStep = EventPlayer
-                                .getController()
-                                .getCurrentIndex();
-
+                int currentStep = EventPlayer.getController().getCurrentIndex();
                 int comparisons = 0;
                 int swaps = 0;
 
-                int limit = Math.min(
-                                currentStep,
-                                events.size());
+                int limit = Math.min(currentStep, events.size());
 
                 for (int i = 0; i < limit; i++) {
 
                         AnimationEvent event = events.get(i);
 
                         if (event instanceof CompareEvent) {
-
                                 comparisons++;
-
                         } else if (event instanceof SearchCompareEvent) {
-
                                 comparisons++;
-
                         } else if (event instanceof SwapEvent) {
-
                                 swaps++;
                         }
                 }
@@ -747,19 +611,10 @@ public class MainView extends BorderPane {
                         return;
                 }
 
-                int current = EventPlayer
-                                .getController()
-                                .getCurrentIndex();
+                int current = EventPlayer.getController().getCurrentIndex();
+                int total = events == null ? 0 : events.size();
 
-                int total = events == null
-                                ? 0
-                                : events.size();
-
-                stepLabel.setText(
-                                "Step "
-                                                + current
-                                                + " / "
-                                                + total);
+                stepLabel.setText("Step " + current + " / " + total);
         }
 
         // =================================================

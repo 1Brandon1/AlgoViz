@@ -14,116 +14,82 @@ import java.util.List;
 
 public class InterpolationSearch implements SearchingAlgorithm {
 
-    @Override
-    public List<AnimationEvent> generateEvents(
-            int[] array,
-            int target) {
+        @Override
+        public List<AnimationEvent> generateEvents(int[] array, int target) {
+                List<AnimationEvent> events = new ArrayList<>();
 
-        List<AnimationEvent> events = new ArrayList<>();
+                // ---------------------------------------------
+                // SORT ARRAY
+                // ---------------------------------------------
 
-        // ---------------------------------------------
-        // SORT ARRAY
-        // ---------------------------------------------
+                int[] sorted = Arrays.copyOf(array, array.length);
+                Arrays.sort(sorted);
 
-        int[] sorted = Arrays.copyOf(
-                array,
-                array.length);
+                events.add(new SortArrayEvent());
 
-        Arrays.sort(sorted);
+                // ---------------------------------------------
+                // EMPTY ARRAY
+                // ---------------------------------------------
 
-        events.add(
-                new SortArrayEvent());
-
-        // ---------------------------------------------
-        // EMPTY ARRAY
-        // ---------------------------------------------
-
-        if (sorted.length == 0) {
-
-            events.add(
-                    new NotFoundEvent());
-
-            return events;
-        }
-
-        // ---------------------------------------------
-        // INTERPOLATION SEARCH
-        // ---------------------------------------------
-
-        int low = 0;
-        int high = sorted.length - 1;
-
-        while (low <= high &&
-                target >= sorted[low] &&
-                target <= sorted[high]) {
-
-            // Target found at boundary
-            if (sorted[low] == sorted[high]) {
-
-                events.add(
-                        new SearchRangeEvent(
-                                low,
-                                high));
-
-                events.add(
-                        new SearchCompareEvent(
-                                low));
-
-                if (sorted[low] == target) {
-
-                    events.add(
-                            new FoundEvent(
-                                    low));
-
-                } else {
-
-                    events.add(
-                            new NotFoundEvent());
+                if (sorted.length == 0) {
+                        events.add(new NotFoundEvent());
+                        return events;
                 }
 
+                // ---------------------------------------------
+                // INTERPOLATION SEARCH
+                // ---------------------------------------------
+
+                int low = 0;
+                int high = sorted.length - 1;
+
+                while (low <= high &&
+                                target >= sorted[low] &&
+                                target <= sorted[high]) {
+
+                        // Target found at boundary
+                        if (sorted[low] == sorted[high]) {
+
+                                events.add(new SearchRangeEvent(low, high));
+                                events.add(new SearchCompareEvent(low));
+
+                                if (sorted[low] == target) {
+
+                                        events.add(new FoundEvent(low));
+                                } else {
+
+                                        events.add(new NotFoundEvent());
+                                }
+
+                                return events;
+                        }
+
+                        int position = low
+                                        + ((target - sorted[low])
+                                                        * (high - low))
+                                                        / (sorted[high] - sorted[low]);
+
+                        events.add(new SearchRangeEvent(low, high));
+                        events.add(new SearchCompareEvent(position));
+
+                        if (sorted[position] == target) {
+
+                                events.add(new FoundEvent(position));
+                                return events;
+                        }
+
+                        if (sorted[position] < target) {
+                                low = position + 1;
+                        } else {
+                                high = position - 1;
+                        }
+                }
+
+                // ---------------------------------------------
+                // NOT FOUND
+                // ---------------------------------------------
+
+                events.add(new NotFoundEvent());
                 return events;
-            }
-
-            int position = low
-                    + ((target - sorted[low])
-                            * (high - low))
-                            / (sorted[high] - sorted[low]);
-
-            events.add(
-                    new SearchRangeEvent(
-                            low,
-                            high));
-
-            events.add(
-                    new SearchCompareEvent(
-                            position));
-
-            if (sorted[position] == target) {
-
-                events.add(
-                        new FoundEvent(
-                                position));
-
-                return events;
-            }
-
-            if (sorted[position] < target) {
-
-                low = position + 1;
-
-            } else {
-
-                high = position - 1;
-            }
         }
-
-        // ---------------------------------------------
-        // NOT FOUND
-        // ---------------------------------------------
-
-        events.add(
-                new NotFoundEvent());
-
-        return events;
-    }
 }

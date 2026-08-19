@@ -13,11 +13,8 @@ public class EventPlayer {
     private static final PlaybackController controller = new PlaybackController();
 
     private static List<AnimationEvent> events;
-
     private static ArrayVisualiser visualiser;
-
     private static Timeline timeline;
-
     private static Runnable updateListener;
 
     // =================================================
@@ -25,7 +22,6 @@ public class EventPlayer {
     // =================================================
 
     public static PlaybackController getController() {
-
         return controller;
     }
 
@@ -57,9 +53,7 @@ public class EventPlayer {
         stop();
 
         events = newEvents;
-
         visualiser = newVisualiser;
-
         controller.reset();
 
         if (visualiser != null) {
@@ -75,26 +69,18 @@ public class EventPlayer {
 
     public static void stepForward() {
 
-        if (events == null ||
-                visualiser == null) {
-
+        if (events == null || visualiser == null) {
             return;
         }
 
         if (controller.getCurrentIndex() >= events.size()) {
-
             return;
         }
 
-        AnimationEvent event = events.get(
-                controller.getCurrentIndex());
+        AnimationEvent event = events.get(controller.getCurrentIndex());
 
-        applyEvent(
-                event,
-                visualiser);
-
+        applyEvent(event, visualiser);
         controller.next();
-
         notifyUpdate();
     }
 
@@ -106,19 +92,15 @@ public class EventPlayer {
 
         if (events == null ||
                 visualiser == null) {
-
             return;
         }
 
         if (controller.getCurrentIndex() <= 0) {
-
             return;
         }
 
         controller.previous();
-
         rebuild();
-
         notifyUpdate();
     }
 
@@ -129,14 +111,11 @@ public class EventPlayer {
     private static void rebuild() {
 
         visualiser.reset();
-
         int target = controller.getCurrentIndex();
 
         for (int i = 0; i < target; i++) {
 
-            applyEvent(
-                    events.get(i),
-                    visualiser);
+            applyEvent(events.get(i), visualiser);
         }
     }
 
@@ -146,10 +125,7 @@ public class EventPlayer {
 
     public static void play() {
 
-        if (events == null ||
-                visualiser == null ||
-                events.isEmpty()) {
-
+        if (events == null || visualiser == null || events.isEmpty()) {
             return;
         }
 
@@ -165,9 +141,7 @@ public class EventPlayer {
                         Duration.millis(40),
                         e -> playNext()));
 
-        timeline.setCycleCount(
-                Timeline.INDEFINITE);
-
+        timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
     }
 
@@ -178,15 +152,11 @@ public class EventPlayer {
     private static void playNext() {
 
         if (!controller.isPlaying()) {
-
             return;
         }
 
-        if (events == null ||
-                controller.getCurrentIndex() >= events.size()) {
-
+        if (events == null || controller.getCurrentIndex() >= events.size()) {
             stop();
-
             return;
         }
 
@@ -200,14 +170,11 @@ public class EventPlayer {
     public static void stop() {
 
         if (timeline != null) {
-
             timeline.stop();
-
             timeline = null;
         }
 
         controller.pause();
-
         notifyUpdate();
     }
 
@@ -227,8 +194,7 @@ public class EventPlayer {
 
         } else if (event instanceof SearchCompareEvent searchCompare) {
 
-            visualiser.searchCompare(
-                    searchCompare.getIndex());
+            visualiser.searchCompare(searchCompare.getIndex());
 
         } else if (event instanceof SwapEvent swap) {
 
@@ -244,23 +210,19 @@ public class EventPlayer {
 
         } else if (event instanceof PivotEvent pivot) {
 
-            visualiser.pivot(
-                    pivot.getPivotIndex());
+            visualiser.pivot(pivot.getPivotIndex());
 
         } else if (event instanceof SortedEvent sorted) {
 
-            visualiser.markSorted(
-                    sorted.getIndex());
+            visualiser.markSorted(sorted.getIndex());
 
         } else if (event instanceof SearchCompareEvent search) {
 
-            visualiser.searchCompare(
-                    search.getIndex());
+            visualiser.searchCompare(search.getIndex());
 
         } else if (event instanceof FoundEvent found) {
 
-            visualiser.markFound(
-                    found.getIndex());
+            visualiser.markFound(found.getIndex());
 
         } else if (event instanceof NotFoundEvent) {
 
@@ -275,6 +237,7 @@ public class EventPlayer {
             visualiser.setSearchRange(
                     range.getLeft(),
                     range.getRight());
+
         } else if (event instanceof SortCompleteEvent) {
 
             visualiser.markSortComplete();

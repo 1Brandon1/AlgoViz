@@ -14,73 +14,58 @@ import java.util.List;
 
 public class BinarySearch implements SearchingAlgorithm {
 
-    @Override
-    public List<AnimationEvent> generateEvents(
-            int[] array,
-            int target) {
+        @Override
+        public List<AnimationEvent> generateEvents(int[] array, int target) {
+                List<AnimationEvent> events = new ArrayList<>();
 
-        List<AnimationEvent> events = new ArrayList<>();
+                // ---------------------------------------------
+                // SORT ARRAY
+                // ---------------------------------------------
 
-        // ---------------------------------------------
-        // SORT ARRAY
-        // ---------------------------------------------
+                int[] sorted = Arrays.copyOf(array, array.length);
+                Arrays.sort(sorted);
 
-        int[] sorted = Arrays.copyOf(
-                array,
-                array.length);
+                events.add(new SortArrayEvent());
 
-        Arrays.sort(sorted);
+                // ---------------------------------------------
+                // BINARY SEARCH
+                // ---------------------------------------------
 
-        events.add(
-                new SortArrayEvent());
+                int left = 0;
+                int right = sorted.length - 1;
 
-        // ---------------------------------------------
-        // BINARY SEARCH
-        // ---------------------------------------------
+                while (left <= right) {
 
-        int left = 0;
-        int right = sorted.length - 1;
+                        // Show the current search range
+                        events.add(
+                                        new SearchRangeEvent(
+                                                        left,
+                                                        right));
 
-        while (left <= right) {
+                        int middle = left + (right - left) / 2;
 
-            // Show the current search range
-            events.add(
-                    new SearchRangeEvent(
-                            left,
-                            right));
+                        // Highlight midpoint
+                        events.add(new SearchCompareEvent(middle));
 
-            int middle = left + (right - left) / 2;
+                        // Target found
+                        if (sorted[middle] == target) {
 
-            // Highlight midpoint
-            events.add(
-                    new SearchCompareEvent(
-                            middle));
+                                events.add(new FoundEvent(middle));
+                                return events;
+                        }
 
-            // Target found
-            if (sorted[middle] == target) {
+                        // Target is larger
+                        if (sorted[middle] < target) {
 
-                events.add(
-                        new FoundEvent(
-                                middle));
+                                left = middle + 1;
+                        } else {
 
+                                right = middle - 1;
+                        }
+                }
+
+                // Target does not exist
+                events.add(new NotFoundEvent());
                 return events;
-            }
-
-            // Target is larger
-            if (sorted[middle] < target) {
-
-                left = middle + 1;
-
-            } else {
-
-                right = middle - 1;
-            }
         }
-
-        // Target does not exist
-        events.add(
-                new NotFoundEvent());
-
-        return events;
-    }
 }

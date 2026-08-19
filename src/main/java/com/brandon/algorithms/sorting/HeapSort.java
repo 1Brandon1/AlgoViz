@@ -13,9 +13,7 @@ import java.util.List;
 public class HeapSort implements SortingAlgorithm {
 
         @Override
-        public List<AnimationEvent> generateEvents(
-                        int[] array) {
-
+        public List<AnimationEvent> generateEvents(int[] array) {
                 List<AnimationEvent> events = new ArrayList<>();
 
                 int n = array.length;
@@ -25,12 +23,7 @@ public class HeapSort implements SortingAlgorithm {
                 // ---------------------------------------------
 
                 for (int i = n / 2 - 1; i >= 0; i--) {
-
-                        heapify(
-                                        array,
-                                        n,
-                                        i,
-                                        events);
+                        heapify(array, n, i, events);
                 }
 
                 // ---------------------------------------------
@@ -38,33 +31,16 @@ public class HeapSort implements SortingAlgorithm {
                 // ---------------------------------------------
 
                 for (int end = n - 1; end > 0; end--) {
-
-                        events.add(
-                                        new CompareEvent(
-                                                        0,
-                                                        end));
+                        events.add(new CompareEvent(0, end));
 
                         // Move largest element to the end
-                        swap(
-                                        array,
-                                        0,
-                                        end);
+                        swap(array, 0, end);
 
-                        events.add(
-                                        new SwapEvent(
-                                                        0,
-                                                        end));
-
-                        events.add(
-                                        new SortedEvent(
-                                                        end));
+                        events.add(new SwapEvent(0, end));
+                        events.add(new SortedEvent(end));
 
                         // Restore heap
-                        heapify(
-                                        array,
-                                        end,
-                                        0,
-                                        events);
+                        heapify(array, end, 0, events);
                 }
 
                 // ---------------------------------------------
@@ -72,26 +48,17 @@ public class HeapSort implements SortingAlgorithm {
                 // ---------------------------------------------
 
                 if (n > 0) {
-
-                        events.add(
-                                        new SortedEvent(0));
-
+                        events.add(new SortedEvent(0));
                 }
 
                 events.add(new SortCompleteEvent());
                 return events;
         }
 
-        private void heapify(
-                        int[] array,
-                        int heapSize,
-                        int root,
-                        List<AnimationEvent> events) {
+        private void heapify(int[] array, int heapSize, int root, List<AnimationEvent> events) {
 
                 int largest = root;
-
                 int left = 2 * root + 1;
-
                 int right = 2 * root + 2;
 
                 // ---------------------------------------------
@@ -99,14 +66,9 @@ public class HeapSort implements SortingAlgorithm {
                 // ---------------------------------------------
 
                 if (left < heapSize) {
-
-                        events.add(
-                                        new CompareEvent(
-                                                        root,
-                                                        left));
+                        events.add(new CompareEvent(root, left));
 
                         if (array[left] > array[largest]) {
-
                                 largest = left;
                         }
                 }
@@ -116,14 +78,9 @@ public class HeapSort implements SortingAlgorithm {
                 // ---------------------------------------------
 
                 if (right < heapSize) {
-
-                        events.add(
-                                        new CompareEvent(
-                                                        largest,
-                                                        right));
+                        events.add(new CompareEvent(largest, right));
 
                         if (array[right] > array[largest]) {
-
                                 largest = right;
                         }
                 }
@@ -133,34 +90,15 @@ public class HeapSort implements SortingAlgorithm {
                 // ---------------------------------------------
 
                 if (largest != root) {
-
-                        swap(
-                                        array,
-                                        root,
-                                        largest);
-
-                        events.add(
-                                        new SwapEvent(
-                                                        root,
-                                                        largest));
-
-                        heapify(
-                                        array,
-                                        heapSize,
-                                        largest,
-                                        events);
+                        swap(array, root, largest);
+                        events.add(new SwapEvent(root, largest));
+                        heapify(array, heapSize, largest, events);
                 }
         }
 
-        private void swap(
-                        int[] array,
-                        int first,
-                        int second) {
-
+        private void swap(int[] array, int first, int second) {
                 int temp = array[first];
-
                 array[first] = array[second];
-
                 array[second] = temp;
         }
 }

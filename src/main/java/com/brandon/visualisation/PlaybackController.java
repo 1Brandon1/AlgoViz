@@ -3,7 +3,6 @@ package com.brandon.visualisation;
 public class PlaybackController {
 
     private int currentIndex = 0;
-
     private boolean playing = false;
 
     public int getCurrentIndex() {

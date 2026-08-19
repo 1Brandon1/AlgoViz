@@ -46,7 +46,6 @@ public class SelectionSort implements SortingAlgorithm {
 
         events.add(new SortedEvent(copy.length - 1));
         events.add(new SortCompleteEvent());
-
         return events;
     }
 }

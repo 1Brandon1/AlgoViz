@@ -12,10 +12,7 @@ import java.util.List;
 public class LinearSearch implements SearchingAlgorithm {
 
     @Override
-    public List<AnimationEvent> generateEvents(
-            int[] array,
-            int target) {
-
+    public List<AnimationEvent> generateEvents(int[] array, int target) {
         List<AnimationEvent> events = new ArrayList<>();
 
         for (int i = 0; i < array.length; i++) {
@@ -23,14 +20,12 @@ public class LinearSearch implements SearchingAlgorithm {
             events.add(new SearchCompareEvent(i));
 
             if (array[i] == target) {
-
                 events.add(new FoundEvent(i));
                 return events;
             }
         }
 
         events.add(new NotFoundEvent());
-
         return events;
     }
 }

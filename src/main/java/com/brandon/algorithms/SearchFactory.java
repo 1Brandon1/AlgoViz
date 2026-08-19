@@ -7,8 +7,7 @@ import com.brandon.algorithms.searching.InterpolationSearch;
 
 public class SearchFactory {
 
-    public static SearchingAlgorithm create(
-            SearchType type) {
+    public static SearchingAlgorithm create(SearchType type) {
 
         return switch (type) {
 

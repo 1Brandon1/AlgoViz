@@ -34,7 +34,6 @@ public class ArrayVisualiser extends HBox {
     private final List<Rectangle> bars = new ArrayList<>();
 
     private final int[] originalValues;
-
     private final int[] currentValues;
 
     // -------------------------------------------------
@@ -42,15 +41,11 @@ public class ArrayVisualiser extends HBox {
     // -------------------------------------------------
 
     private final Set<Integer> sorted = new HashSet<>();
-
     private final Set<Integer> compared = new HashSet<>();
 
     private IntConsumer barClickListener;
-
     private Integer pivot = null;
-
     private Integer searchLeft = null;
-
     private Integer searchRight = null;
 
     // -------------------------------------------------
@@ -60,14 +55,12 @@ public class ArrayVisualiser extends HBox {
     public ArrayVisualiser(ArrayModel model) {
 
         originalValues = model.getValues().clone();
-
         currentValues = originalValues.clone();
 
         setAlignment(Pos.BOTTOM_CENTER);
         setSpacing(4);
 
         createBars();
-
         render();
     }
 
@@ -80,19 +73,14 @@ public class ArrayVisualiser extends HBox {
         for (int i = 0; i < currentValues.length; i++) {
 
             Rectangle bar = new Rectangle();
-
-            bar.setWidth(
-                    BAR_WIDTH);
-
-            bar.setHeight(
-                    currentValues[i]);
+            bar.setWidth(BAR_WIDTH);
+            bar.setHeight(currentValues[i]);
 
             // Rounded corners
             bar.setArcWidth(6);
             bar.setArcHeight(6);
 
             bars.add(bar);
-
             getChildren().add(bar);
 
             final int index = i;
@@ -104,9 +92,7 @@ public class ArrayVisualiser extends HBox {
             bar.setOnMouseClicked(e -> {
 
                 if (barClickListener != null) {
-
-                    barClickListener.accept(
-                            index);
+                    barClickListener.accept(index);
                 }
             });
 
@@ -131,18 +117,14 @@ public class ArrayVisualiser extends HBox {
             bar.setOnMouseEntered(e -> {
 
                 scaleDown.stop();
-
                 scaleUp.playFromStart();
-
                 bar.setOpacity(0.9);
             });
 
             bar.setOnMouseExited(e -> {
 
                 scaleUp.stop();
-
                 scaleDown.playFromStart();
-
                 bar.setOpacity(1.0);
             });
         }
@@ -157,7 +139,6 @@ public class ArrayVisualiser extends HBox {
         List<Integer> values = new ArrayList<>();
 
         for (int value : currentValues) {
-
             values.add(value);
         }
 
@@ -166,9 +147,7 @@ public class ArrayVisualiser extends HBox {
         for (int i = 0; i < values.size(); i++) {
 
             currentValues[i] = values.get(i);
-
-            bars.get(i).setHeight(
-                    currentValues[i]);
+            bars.get(i).setHeight(currentValues[i]);
         }
 
         compared.clear();
@@ -181,9 +160,7 @@ public class ArrayVisualiser extends HBox {
     // BAR CLICK LISTENER
     // -------------------------------------------------
 
-    public void setBarClickListener(
-            IntConsumer listener) {
-
+    public void setBarClickListener(IntConsumer listener) {
         this.barClickListener = listener;
     }
 
@@ -192,7 +169,6 @@ public class ArrayVisualiser extends HBox {
     // -------------------------------------------------
 
     public int getValueAt(int index) {
-
         return currentValues[index];
     }
 
@@ -206,7 +182,6 @@ public class ArrayVisualiser extends HBox {
         compared.clear();
 
         pivot = null;
-
         searchLeft = null;
         searchRight = null;
 
@@ -214,8 +189,7 @@ public class ArrayVisualiser extends HBox {
 
             currentValues[i] = originalValues[i];
 
-            bars.get(i).setHeight(
-                    originalValues[i]);
+            bars.get(i).setHeight(originalValues[i]);
         }
 
         render();
@@ -228,16 +202,11 @@ public class ArrayVisualiser extends HBox {
     public void swapBars(int a, int b) {
 
         int value = currentValues[a];
-
         currentValues[a] = currentValues[b];
-
         currentValues[b] = value;
 
-        bars.get(a).setHeight(
-                currentValues[a]);
-
-        bars.get(b).setHeight(
-                currentValues[b]);
+        bars.get(a).setHeight(currentValues[a]);
+        bars.get(b).setHeight(currentValues[b]);
 
         render();
     }
@@ -246,14 +215,10 @@ public class ArrayVisualiser extends HBox {
     // OVERWRITE
     // -------------------------------------------------
 
-    public void setBarHeight(
-            int index,
-            int value) {
+    public void setBarHeight(int index, int value) {
 
         currentValues[index] = value;
-
-        bars.get(index)
-                .setHeight(value);
+        bars.get(index).setHeight(value);
 
         render();
     }
@@ -262,12 +227,9 @@ public class ArrayVisualiser extends HBox {
     // NORMAL SORT COMPARISON
     // -------------------------------------------------
 
-    public void compare(
-            int a,
-            int b) {
+    public void compare(int a, int b) {
 
         compared.clear();
-
         compared.add(a);
         compared.add(b);
 
@@ -278,14 +240,10 @@ public class ArrayVisualiser extends HBox {
     // SEARCH RANGE
     // -------------------------------------------------
 
-    public void setSearchRange(
-            int left,
-            int right) {
+    public void setSearchRange(int left, int right) {
 
         searchLeft = left;
-
         searchRight = right;
-
         compared.clear();
 
         render();
@@ -295,11 +253,9 @@ public class ArrayVisualiser extends HBox {
     // SEARCH COMPARISON
     // -------------------------------------------------
 
-    public void searchCompare(
-            int index) {
+    public void searchCompare(int index) {
 
         compared.clear();
-
         compared.add(index);
 
         render();
@@ -309,14 +265,11 @@ public class ArrayVisualiser extends HBox {
     // FOUND
     // -------------------------------------------------
 
-    public void markFound(
-            int index) {
+    public void markFound(int index) {
 
         compared.clear();
 
-        bars.get(index)
-                .setFill(
-                        BAR_FOUND);
+        bars.get(index).setFill(BAR_FOUND);
     }
 
     // -------------------------------------------------
@@ -328,15 +281,11 @@ public class ArrayVisualiser extends HBox {
         compared.clear();
 
         pivot = null;
-
         searchLeft = null;
-
         searchRight = null;
 
         for (Rectangle bar : bars) {
-
-            bar.setFill(
-                    BAR_NOT_FOUND);
+            bar.setFill(BAR_NOT_FOUND);
         }
     }
 
@@ -347,7 +296,6 @@ public class ArrayVisualiser extends HBox {
     public void markSorted(int index) {
 
         sorted.add(index);
-
         render();
     }
 
@@ -356,7 +304,6 @@ public class ArrayVisualiser extends HBox {
         sorted.clear();
 
         for (int i = 0; i < bars.size(); i++) {
-
             sorted.add(i);
         }
 
@@ -367,11 +314,9 @@ public class ArrayVisualiser extends HBox {
     // PIVOT
     // -------------------------------------------------
 
-    public void pivot(
-            int index) {
+    public void pivot(int index) {
 
         pivot = index;
-
         render();
     }
 
@@ -382,7 +327,6 @@ public class ArrayVisualiser extends HBox {
     public void clearHighlights() {
 
         compared.clear();
-
         render();
     }
 
@@ -393,7 +337,6 @@ public class ArrayVisualiser extends HBox {
     private void render() {
 
         for (int i = 0; i < bars.size(); i++) {
-
             Rectangle bar = bars.get(i);
 
             // -----------------------------------------
@@ -402,12 +345,9 @@ public class ArrayVisualiser extends HBox {
 
             if (searchLeft != null &&
                     searchRight != null &&
-                    (i < searchLeft ||
-                            i > searchRight)) {
+                    (i < searchLeft || i > searchRight)) {
 
-                bar.setFill(
-                        BAR_OUTSIDE);
-
+                bar.setFill(BAR_OUTSIDE);
                 continue;
             }
 
@@ -416,19 +356,15 @@ public class ArrayVisualiser extends HBox {
             // -----------------------------------------
 
             if (sorted.contains(i)) {
-
-                bar.setFill(
-                        BAR_SORTED);
+                bar.setFill(BAR_SORTED);
 
                 // -----------------------------------------
                 // PIVOT
                 // -----------------------------------------
 
-            } else if (pivot != null &&
-                    pivot == i) {
+            } else if (pivot != null && pivot == i) {
 
-                bar.setFill(
-                        BAR_PIVOT);
+                bar.setFill(BAR_PIVOT);
 
                 // -----------------------------------------
                 // COMPARISON
@@ -436,8 +372,7 @@ public class ArrayVisualiser extends HBox {
 
             } else if (compared.contains(i)) {
 
-                bar.setFill(
-                        BAR_COMPARE);
+                bar.setFill(BAR_COMPARE);
 
                 // -----------------------------------------
                 // DEFAULT
@@ -445,8 +380,7 @@ public class ArrayVisualiser extends HBox {
 
             } else {
 
-                bar.setFill(
-                        BAR_DEFAULT);
+                bar.setFill(BAR_DEFAULT);
             }
         }
     }

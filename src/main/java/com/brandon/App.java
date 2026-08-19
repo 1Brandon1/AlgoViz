@@ -18,23 +18,15 @@ public class App extends Application {
                                 1200,
                                 800);
 
-                String css = getClass()
-                                .getResource(
-                                                "/styles/application.css")
-                                .toExternalForm();
-
-                scene.getStylesheets()
-                                .add(css);
+                String css = getClass().getResource("/styles/application.css").toExternalForm();
+                scene.getStylesheets().add(css);
 
                 stage.setTitle("AlgoViz");
-
                 stage.setScene(scene);
-
                 stage.show();
         }
 
         public static void main(String[] args) {
-
                 launch();
         }
 }

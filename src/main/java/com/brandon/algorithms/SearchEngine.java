@@ -13,8 +13,6 @@ public class SearchEngine {
 
         SearchingAlgorithm algorithm = SearchFactory.create(type);
 
-        return algorithm.generateEvents(
-                array,
-                target);
+        return algorithm.generateEvents(array, target);
     }
 }

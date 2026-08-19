@@ -14,120 +14,85 @@ import java.util.List;
 
 public class JumpSearch implements SearchingAlgorithm {
 
-    @Override
-    public List<AnimationEvent> generateEvents(
-            int[] array,
-            int target) {
+        @Override
+        public List<AnimationEvent> generateEvents(int[] array, int target) {
+                List<AnimationEvent> events = new ArrayList<>();
 
-        List<AnimationEvent> events = new ArrayList<>();
+                // ---------------------------------------------
+                // SORT ARRAY
+                // ---------------------------------------------
 
-        // ---------------------------------------------
-        // SORT ARRAY
-        // ---------------------------------------------
+                int[] sorted = Arrays.copyOf(array, array.length);
+                Arrays.sort(sorted);
 
-        int[] sorted = Arrays.copyOf(
-                array,
-                array.length);
+                events.add(new SortArrayEvent());
 
-        Arrays.sort(sorted);
+                // ---------------------------------------------
+                // EMPTY ARRAY
+                // ---------------------------------------------
 
-        events.add(
-                new SortArrayEvent());
+                if (sorted.length == 0) {
+                        events.add(new NotFoundEvent());
+                        return events;
+                }
 
-        // ---------------------------------------------
-        // EMPTY ARRAY
-        // ---------------------------------------------
+                // ---------------------------------------------
+                // JUMP SIZE
+                // ---------------------------------------------
 
-        if (sorted.length == 0) {
+                int jumpSize = (int) Math.sqrt(sorted.length);
+                int previous = 0;
+                int current = jumpSize;
 
-            events.add(
-                    new NotFoundEvent());
+                // ---------------------------------------------
+                // JUMP THROUGH ARRAY
+                // ---------------------------------------------
 
-            return events;
-        }
+                while (previous < sorted.length &&
+                                sorted[Math.min(
+                                                current,
+                                                sorted.length) - 1] < target) {
 
-        // ---------------------------------------------
-        // JUMP SIZE
-        // ---------------------------------------------
+                        int end = Math.min(current, sorted.length) - 1;
 
-        int jumpSize = (int) Math.sqrt(sorted.length);
+                        events.add(new SearchRangeEvent(previous, end));
+                        events.add(new SearchCompareEvent(end));
 
-        int previous = 0;
-        int current = jumpSize;
+                        previous = current;
+                        current += jumpSize;
 
-        // ---------------------------------------------
-        // JUMP THROUGH ARRAY
-        // ---------------------------------------------
+                        if (previous >= sorted.length) {
+                                events.add(new NotFoundEvent());
+                                return events;
+                        }
+                }
 
-        while (previous < sorted.length &&
-                sorted[Math.min(
-                        current,
-                        sorted.length) - 1] < target) {
+                // ---------------------------------------------
+                // LINEAR SEARCH WITHIN BLOCK
+                // ---------------------------------------------
 
-            int end = Math.min(
-                    current,
-                    sorted.length) - 1;
+                int end = Math.min(current, sorted.length);
 
-            events.add(
-                    new SearchRangeEvent(
-                            previous,
-                            end));
+                events.add(new SearchRangeEvent(previous, end - 1));
 
-            events.add(
-                    new SearchCompareEvent(
-                            end));
+                for (int i = previous; i < end; i++) {
+                        events.add(new SearchCompareEvent(i));
 
-            previous = current;
-            current += jumpSize;
+                        if (sorted[i] == target) {
+                                events.add(new FoundEvent(i));
+                                return events;
+                        }
 
-            if (previous >= sorted.length) {
+                        if (sorted[i] > target) {
+                                break;
+                        }
+                }
 
-                events.add(
-                        new NotFoundEvent());
+                // ---------------------------------------------
+                // NOT FOUND
+                // ---------------------------------------------
 
+                events.add(new NotFoundEvent());
                 return events;
-            }
         }
-
-        // ---------------------------------------------
-        // LINEAR SEARCH WITHIN BLOCK
-        // ---------------------------------------------
-
-        int end = Math.min(
-                current,
-                sorted.length);
-
-        events.add(
-                new SearchRangeEvent(
-                        previous,
-                        end - 1));
-
-        for (int i = previous; i < end; i++) {
-
-            events.add(
-                    new SearchCompareEvent(i));
-
-            if (sorted[i] == target) {
-
-                events.add(
-                        new FoundEvent(i));
-
-                return events;
-            }
-
-            if (sorted[i] > target) {
-
-                break;
-            }
-        }
-
-        // ---------------------------------------------
-        // NOT FOUND
-        // ---------------------------------------------
-
-        events.add(
-                new NotFoundEvent());
-
-        return events;
-    }
 }

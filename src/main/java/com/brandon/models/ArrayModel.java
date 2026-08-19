@@ -9,7 +9,6 @@ public class ArrayModel {
     public ArrayModel(int size) {
 
         values = new int[size];
-
         Random random = new Random();
 
         for (int i = 0; i < values.length; i++) {
