@@ -18,18 +18,12 @@ public class HeapSort implements SortingAlgorithm {
 
                 int n = array.length;
 
-                // ---------------------------------------------
-                // BUILD MAX HEAP
-                // ---------------------------------------------
-
+                // Build max heap
                 for (int i = n / 2 - 1; i >= 0; i--) {
                         heapify(array, n, i, events);
                 }
 
-                // ---------------------------------------------
-                // EXTRACT ELEMENTS FROM HEAP
-                // ---------------------------------------------
-
+                // Extract elements from Heap
                 for (int end = n - 1; end > 0; end--) {
                         events.add(new CompareEvent(0, end));
 
@@ -43,10 +37,7 @@ public class HeapSort implements SortingAlgorithm {
                         heapify(array, end, 0, events);
                 }
 
-                // ---------------------------------------------
-                // SINGLE ELEMENT
-                // ---------------------------------------------
-
+                // Single element
                 if (n > 0) {
                         events.add(new SortedEvent(0));
                 }
@@ -61,10 +52,7 @@ public class HeapSort implements SortingAlgorithm {
                 int left = 2 * root + 1;
                 int right = 2 * root + 2;
 
-                // ---------------------------------------------
-                // LEFT CHILD
-                // ---------------------------------------------
-
+                // Left child
                 if (left < heapSize) {
                         events.add(new CompareEvent(root, left));
 
@@ -73,10 +61,7 @@ public class HeapSort implements SortingAlgorithm {
                         }
                 }
 
-                // ---------------------------------------------
-                // RIGHT CHILD
-                // ---------------------------------------------
-
+                // Right child
                 if (right < heapSize) {
                         events.add(new CompareEvent(largest, right));
 
@@ -85,10 +70,7 @@ public class HeapSort implements SortingAlgorithm {
                         }
                 }
 
-                // ---------------------------------------------
-                // SWAP AND RECURSE
-                // ---------------------------------------------
-
+                // Swap and recurse
                 if (largest != root) {
                         swap(array, root, largest);
                         events.add(new SwapEvent(root, largest));

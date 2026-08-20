@@ -18,36 +18,23 @@ public class JumpSearch implements SearchingAlgorithm {
         public List<AnimationEvent> generateEvents(int[] array, int target) {
                 List<AnimationEvent> events = new ArrayList<>();
 
-                // ---------------------------------------------
-                // SORT ARRAY
-                // ---------------------------------------------
-
+                // Sort array
                 int[] sorted = Arrays.copyOf(array, array.length);
                 Arrays.sort(sorted);
 
                 events.add(new SortArrayEvent());
 
-                // ---------------------------------------------
-                // EMPTY ARRAY
-                // ---------------------------------------------
-
+                // Empty array
                 if (sorted.length == 0) {
                         events.add(new NotFoundEvent());
                         return events;
                 }
 
-                // ---------------------------------------------
-                // JUMP SIZE
-                // ---------------------------------------------
-
                 int jumpSize = (int) Math.sqrt(sorted.length);
                 int previous = 0;
                 int current = jumpSize;
 
-                // ---------------------------------------------
-                // JUMP THROUGH ARRAY
-                // ---------------------------------------------
-
+                // Jump through array
                 while (previous < sorted.length &&
                                 sorted[Math.min(
                                                 current,
@@ -67,10 +54,7 @@ public class JumpSearch implements SearchingAlgorithm {
                         }
                 }
 
-                // ---------------------------------------------
-                // LINEAR SEARCH WITHIN BLOCK
-                // ---------------------------------------------
-
+                // Linear search within block
                 int end = Math.min(current, sorted.length);
 
                 events.add(new SearchRangeEvent(previous, end - 1));
@@ -88,10 +72,7 @@ public class JumpSearch implements SearchingAlgorithm {
                         }
                 }
 
-                // ---------------------------------------------
-                // NOT FOUND
-                // ---------------------------------------------
-
+                // Not found
                 events.add(new NotFoundEvent());
                 return events;
         }

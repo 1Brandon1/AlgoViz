@@ -33,7 +33,6 @@ public class MainView extends BorderPane {
         // =================================================
         // MAIN UI
         // =================================================
-
         private final StackPane visualizationPane;
 
         private AlgorithmInfoPanel infoPanel;
@@ -50,7 +49,6 @@ public class MainView extends BorderPane {
         // =================================================
         // DATA
         // =================================================
-
         private ArrayModel currentModel;
         private ArrayVisualiser visualiser;
         private List<AnimationEvent> events;
@@ -62,7 +60,6 @@ public class MainView extends BorderPane {
         // =================================================
         // CONSTRUCTOR
         // =================================================
-
         public MainView() {
 
                 visualizationPane = new StackPane();
@@ -76,7 +73,6 @@ public class MainView extends BorderPane {
         // =================================================
         // LAYOUT
         // =================================================
-
         private void createLayout() {
 
                 setPadding(new Insets(0));
@@ -84,10 +80,6 @@ public class MainView extends BorderPane {
                 setCenter(createMainContent());
                 setBottom(createControlPanel());
         }
-
-        // =================================================
-        // HEADER
-        // =================================================
 
         private HBox createHeader() {
 
@@ -128,10 +120,6 @@ public class MainView extends BorderPane {
                 return header;
         }
 
-        // =================================================
-        // MAIN CONTENT
-        // =================================================
-
         private HBox createMainContent() {
 
                 visualizationPane.setPadding(new Insets(30));
@@ -165,22 +153,15 @@ public class MainView extends BorderPane {
         // =================================================
         // CONTROL PANEL
         // =================================================
-
         private VBox createControlPanel() {
 
-                // ---------------------------------------------
-                // MODE
-                // ---------------------------------------------
-
+                // Mode
                 modeSelector = new ComboBox<>();
                 modeSelector.getItems().addAll("Sorting", "Searching");
                 modeSelector.setValue("Sorting");
                 modeSelector.setOnAction(e -> updateMode());
 
-                // ---------------------------------------------
-                // SORTING
-                // ---------------------------------------------
-
+                // Sorting
                 sortSelector = new ComboBox<>();
 
                 sortSelector.getItems().addAll(
@@ -193,10 +174,7 @@ public class MainView extends BorderPane {
                 sortSelector.setValue("Bubble Sort");
                 sortSelector.setOnAction(e -> updateSortingAlgorithm());
 
-                // ---------------------------------------------
-                // SEARCHING
-                // ---------------------------------------------
-
+                // Searching
                 searchSelector = new ComboBox<>();
 
                 searchSelector.getItems().addAll(
@@ -211,10 +189,7 @@ public class MainView extends BorderPane {
                 searchSelector.setVisible(false);
                 searchSelector.setManaged(false);
 
-                // ---------------------------------------------
-                // TARGET
-                // ---------------------------------------------
-
+                // Target
                 targetInput = new TextField();
 
                 targetInput.setPromptText("Target");
@@ -222,10 +197,7 @@ public class MainView extends BorderPane {
                 targetInput.setVisible(false);
                 targetInput.setManaged(false);
 
-                // ---------------------------------------------
-                // BUTTONS
-                // ---------------------------------------------
-
+                // Buttons
                 Button generate = new Button("Generate");
                 Button run = new Button("Run");
                 Button stepBack = new Button("←");
@@ -238,17 +210,11 @@ public class MainView extends BorderPane {
                 playPause.getStyleClass().add("play-button");
                 stepForward.getStyleClass().add("control-button");
 
-                // ---------------------------------------------
-                // STEP LABEL
-                // ---------------------------------------------
-
+                // Step label
                 stepLabel = new Label("Step 0 / 0");
                 stepLabel.getStyleClass().add("step-label");
 
-                // ---------------------------------------------
-                // ACTIONS
-                // ---------------------------------------------
-
+                // Actions
                 generate.setOnAction(e -> generateArray());
                 run.setOnAction(e -> runAlgorithm());
                 stepForward.setOnAction(e -> stepForward());
@@ -270,7 +236,6 @@ public class MainView extends BorderPane {
                 // ---------------------------------------------
                 // TOP CONTROL ROW
                 // ---------------------------------------------
-
                 HBox selectors = new HBox(
                                 10,
                                 modeSelector,
@@ -283,7 +248,6 @@ public class MainView extends BorderPane {
                 // ---------------------------------------------
                 // BOTTOM CONTROL ROW
                 // ---------------------------------------------
-
                 HBox controls = new HBox(
                                 10,
                                 generate,
@@ -298,7 +262,6 @@ public class MainView extends BorderPane {
                 // ---------------------------------------------
                 // PANEL
                 // ---------------------------------------------
-
                 VBox panel = new VBox(
                                 10,
                                 selectors,
@@ -319,7 +282,6 @@ public class MainView extends BorderPane {
         // =================================================
         // MODE
         // =================================================
-
         private void updateMode() {
 
                 searchingMode = modeSelector.getValue().equals("Searching");
@@ -367,7 +329,6 @@ public class MainView extends BorderPane {
         // =================================================
         // SORTING ALGORITHM
         // =================================================
-
         private void updateSortingAlgorithm() {
 
                 switch (sortSelector.getValue()) {
@@ -397,7 +358,6 @@ public class MainView extends BorderPane {
         // =================================================
         // SEARCH ALGORITHM
         // =================================================
-
         private void updateSearchAlgorithm() {
 
                 switch (searchSelector.getValue()) {
@@ -423,9 +383,8 @@ public class MainView extends BorderPane {
         }
 
         // =================================================
-        // RUN
+        // CONTROLS
         // =================================================
-
         private void runAlgorithm() {
 
                 EventPlayer.stop();
@@ -471,10 +430,6 @@ public class MainView extends BorderPane {
                 updateStatistics();
         }
 
-        // =================================================
-        // STEP FORWARD
-        // =================================================
-
         private void stepForward() {
 
                 if (events == null || events.isEmpty()) {
@@ -485,10 +440,6 @@ public class MainView extends BorderPane {
                 updateStepLabel();
                 updateStatistics();
         }
-
-        // =================================================
-        // STEP BACK
-        // =================================================
 
         private void stepBack() {
 
@@ -504,7 +455,6 @@ public class MainView extends BorderPane {
         // =================================================
         // GENERATE ARRAY
         // =================================================
-
         private void generateArray() {
 
                 EventPlayer.stop();
@@ -547,7 +497,6 @@ public class MainView extends BorderPane {
         // =================================================
         // CLEAR EVENTS
         // =================================================
-
         private void clearEvents() {
 
                 EventPlayer.stop();
@@ -564,7 +513,6 @@ public class MainView extends BorderPane {
         // =================================================
         // STATISTICS
         // =================================================
-
         private void updateStatistics() {
 
                 updateStepLabel();
@@ -604,7 +552,6 @@ public class MainView extends BorderPane {
         // =================================================
         // STEP LABEL
         // =================================================
-
         private void updateStepLabel() {
 
                 if (stepLabel == null) {
@@ -620,7 +567,6 @@ public class MainView extends BorderPane {
         // =================================================
         // DISPLAY NAMES
         // =================================================
-
         private String getSortDisplayName() {
 
                 return switch (selectedAlgorithm) {

@@ -18,18 +18,11 @@ public class BinarySearch implements SearchingAlgorithm {
         public List<AnimationEvent> generateEvents(int[] array, int target) {
                 List<AnimationEvent> events = new ArrayList<>();
 
-                // ---------------------------------------------
-                // SORT ARRAY
-                // ---------------------------------------------
-
+                // Sort array
                 int[] sorted = Arrays.copyOf(array, array.length);
                 Arrays.sort(sorted);
 
                 events.add(new SortArrayEvent());
-
-                // ---------------------------------------------
-                // BINARY SEARCH
-                // ---------------------------------------------
 
                 int left = 0;
                 int right = sorted.length - 1;

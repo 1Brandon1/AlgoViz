@@ -18,27 +18,17 @@ public class InterpolationSearch implements SearchingAlgorithm {
         public List<AnimationEvent> generateEvents(int[] array, int target) {
                 List<AnimationEvent> events = new ArrayList<>();
 
-                // ---------------------------------------------
-                // SORT ARRAY
-                // ---------------------------------------------
-
+                // Sort array
                 int[] sorted = Arrays.copyOf(array, array.length);
                 Arrays.sort(sorted);
 
                 events.add(new SortArrayEvent());
 
-                // ---------------------------------------------
-                // EMPTY ARRAY
-                // ---------------------------------------------
-
+                // Empty array
                 if (sorted.length == 0) {
                         events.add(new NotFoundEvent());
                         return events;
                 }
-
-                // ---------------------------------------------
-                // INTERPOLATION SEARCH
-                // ---------------------------------------------
 
                 int low = 0;
                 int high = sorted.length - 1;
@@ -85,10 +75,7 @@ public class InterpolationSearch implements SearchingAlgorithm {
                         }
                 }
 
-                // ---------------------------------------------
-                // NOT FOUND
-                // ---------------------------------------------
-
+                // Not found
                 events.add(new NotFoundEvent());
                 return events;
         }

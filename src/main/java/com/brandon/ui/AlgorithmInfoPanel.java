@@ -27,17 +27,11 @@ public class AlgorithmInfoPanel extends VBox {
 
                 getStyleClass().add("info-panel");
 
-                // ---------------------------------------------
-                // TITLE
-                // ---------------------------------------------
-
+                // Title
                 algorithmName = new Label("Bubble Sort");
                 algorithmName.getStyleClass().add("info-panel-title");
 
-                // ---------------------------------------------
-                // COMPLEXITY
-                // ---------------------------------------------
-
+                // Complexity
                 Label complexityTitle = new Label("COMPLEXITY");
 
                 complexityTitle
@@ -61,10 +55,7 @@ public class AlgorithmInfoPanel extends VBox {
                 addRow(complexityGrid, 3, "Space", spaceValue);
                 addRow(complexityGrid, 4, "Stable", stableValue);
 
-                // ---------------------------------------------
-                // STATISTICS
-                // ---------------------------------------------
-
+                // Statistics
                 Label statisticsTitle = new Label("STATISTICS");
                 statisticsTitle.getStyleClass().add("section-title");
 
@@ -81,10 +72,7 @@ public class AlgorithmInfoPanel extends VBox {
                 addRow(statisticsGrid, 1, "Swaps", swapsValue);
                 addRow(statisticsGrid, 2, "Step", stepValue);
 
-                // ---------------------------------------------
-                // LAYOUT
-                // ---------------------------------------------
-
+                // Layout
                 getChildren().addAll(
                                 algorithmName,
                                 complexityTitle,
@@ -117,7 +105,6 @@ public class AlgorithmInfoPanel extends VBox {
         // =================================================
         // ALGORITHM
         // =================================================
-
         public void setAlgorithm(String algorithm) {
 
                 algorithmName.setText(algorithm);
@@ -241,7 +228,6 @@ public class AlgorithmInfoPanel extends VBox {
         // =================================================
         // STATISTICS
         // =================================================
-
         public void setStatistics(
                         int comparisons,
                         int swaps,

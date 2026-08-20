@@ -25,6 +25,7 @@ public class LinearSearch implements SearchingAlgorithm {
             }
         }
 
+        // Not found
         events.add(new NotFoundEvent());
         return events;
     }

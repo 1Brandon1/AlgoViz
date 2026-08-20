@@ -27,19 +27,13 @@ public class ArrayVisualiser extends HBox {
     private static final Color BAR_NOT_FOUND = Color.web("#EF4444");
     private static final Color BAR_OUTSIDE = Color.web("#334155");
 
-    // -------------------------------------------------
-    // DATA
-    // -------------------------------------------------
-
+    // Data
     private final List<Rectangle> bars = new ArrayList<>();
 
     private final int[] originalValues;
     private final int[] currentValues;
 
-    // -------------------------------------------------
-    // STATES
-    // -------------------------------------------------
-
+    // States
     private final Set<Integer> sorted = new HashSet<>();
     private final Set<Integer> compared = new HashSet<>();
 
@@ -48,10 +42,9 @@ public class ArrayVisualiser extends HBox {
     private Integer searchLeft = null;
     private Integer searchRight = null;
 
-    // -------------------------------------------------
+    // =================================================
     // CONSTRUCTOR
-    // -------------------------------------------------
-
+    // =================================================
     public ArrayVisualiser(ArrayModel model) {
 
         originalValues = model.getValues().clone();
@@ -63,10 +56,6 @@ public class ArrayVisualiser extends HBox {
         createBars();
         render();
     }
-
-    // -------------------------------------------------
-    // CREATE BARS
-    // -------------------------------------------------
 
     private void createBars() {
 
@@ -85,10 +74,7 @@ public class ArrayVisualiser extends HBox {
 
             final int index = i;
 
-            // -------------------------------------------------
-            // CLICK
-            // -------------------------------------------------
-
+            // Click
             bar.setOnMouseClicked(e -> {
 
                 if (barClickListener != null) {
@@ -96,10 +82,7 @@ public class ArrayVisualiser extends HBox {
                 }
             });
 
-            // -------------------------------------------------
-            // HOVER
-            // -------------------------------------------------
-
+            // Hover
             ScaleTransition scaleUp = new ScaleTransition(
                     Duration.millis(120),
                     bar);
@@ -130,10 +113,6 @@ public class ArrayVisualiser extends HBox {
         }
     }
 
-    // -------------------------------------------------
-    // SORT BARS
-    // -------------------------------------------------
-
     public void sortBars() {
 
         List<Integer> values = new ArrayList<>();
@@ -156,25 +135,13 @@ public class ArrayVisualiser extends HBox {
         render();
     }
 
-    // -------------------------------------------------
-    // BAR CLICK LISTENER
-    // -------------------------------------------------
-
     public void setBarClickListener(IntConsumer listener) {
         this.barClickListener = listener;
     }
 
-    // -------------------------------------------------
-    // GET CURRENT VALUE
-    // -------------------------------------------------
-
     public int getValueAt(int index) {
         return currentValues[index];
     }
-
-    // -------------------------------------------------
-    // RESET
-    // -------------------------------------------------
 
     public void reset() {
 
@@ -195,10 +162,6 @@ public class ArrayVisualiser extends HBox {
         render();
     }
 
-    // -------------------------------------------------
-    // SWAP
-    // -------------------------------------------------
-
     public void swapBars(int a, int b) {
 
         int value = currentValues[a];
@@ -211,10 +174,6 @@ public class ArrayVisualiser extends HBox {
         render();
     }
 
-    // -------------------------------------------------
-    // OVERWRITE
-    // -------------------------------------------------
-
     public void setBarHeight(int index, int value) {
 
         currentValues[index] = value;
@@ -222,10 +181,6 @@ public class ArrayVisualiser extends HBox {
 
         render();
     }
-
-    // -------------------------------------------------
-    // NORMAL SORT COMPARISON
-    // -------------------------------------------------
 
     public void compare(int a, int b) {
 
@@ -236,10 +191,6 @@ public class ArrayVisualiser extends HBox {
         render();
     }
 
-    // -------------------------------------------------
-    // SEARCH RANGE
-    // -------------------------------------------------
-
     public void setSearchRange(int left, int right) {
 
         searchLeft = left;
@@ -249,10 +200,6 @@ public class ArrayVisualiser extends HBox {
         render();
     }
 
-    // -------------------------------------------------
-    // SEARCH COMPARISON
-    // -------------------------------------------------
-
     public void searchCompare(int index) {
 
         compared.clear();
@@ -261,20 +208,12 @@ public class ArrayVisualiser extends HBox {
         render();
     }
 
-    // -------------------------------------------------
-    // FOUND
-    // -------------------------------------------------
-
     public void markFound(int index) {
 
         compared.clear();
 
         bars.get(index).setFill(BAR_FOUND);
     }
-
-    // -------------------------------------------------
-    // NOT FOUND
-    // -------------------------------------------------
 
     public void markNotFound() {
 
@@ -288,10 +227,6 @@ public class ArrayVisualiser extends HBox {
             bar.setFill(BAR_NOT_FOUND);
         }
     }
-
-    // -------------------------------------------------
-    // SORTED
-    // -------------------------------------------------
 
     public void markSorted(int index) {
 
@@ -310,19 +245,11 @@ public class ArrayVisualiser extends HBox {
         render();
     }
 
-    // -------------------------------------------------
-    // PIVOT
-    // -------------------------------------------------
-
     public void pivot(int index) {
 
         pivot = index;
         render();
     }
-
-    // -------------------------------------------------
-    // CLEAR HIGHLIGHTS
-    // -------------------------------------------------
 
     public void clearHighlights() {
 
@@ -330,19 +257,12 @@ public class ArrayVisualiser extends HBox {
         render();
     }
 
-    // -------------------------------------------------
-    // RENDER
-    // -------------------------------------------------
-
     private void render() {
 
         for (int i = 0; i < bars.size(); i++) {
             Rectangle bar = bars.get(i);
 
-            // -----------------------------------------
-            // OUTSIDE SEARCH RANGE
-            // -----------------------------------------
-
+            // Outside search range
             if (searchLeft != null &&
                     searchRight != null &&
                     (i < searchLeft || i > searchRight)) {
@@ -351,35 +271,16 @@ public class ArrayVisualiser extends HBox {
                 continue;
             }
 
-            // -----------------------------------------
-            // SORTED
-            // -----------------------------------------
-
             if (sorted.contains(i)) {
                 bar.setFill(BAR_SORTED);
 
-                // -----------------------------------------
-                // PIVOT
-                // -----------------------------------------
-
             } else if (pivot != null && pivot == i) {
-
                 bar.setFill(BAR_PIVOT);
 
-                // -----------------------------------------
-                // COMPARISON
-                // -----------------------------------------
-
             } else if (compared.contains(i)) {
-
                 bar.setFill(BAR_COMPARE);
 
-                // -----------------------------------------
-                // DEFAULT
-                // -----------------------------------------
-
             } else {
-
                 bar.setFill(BAR_DEFAULT);
             }
         }

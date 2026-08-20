@@ -17,10 +17,6 @@ public class EventPlayer {
     private static Timeline timeline;
     private static Runnable updateListener;
 
-    // =================================================
-    // CONTROLLER
-    // =================================================
-
     public static PlaybackController getController() {
         return controller;
     }
@@ -28,7 +24,6 @@ public class EventPlayer {
     // =================================================
     // UPDATE LISTENER
     // =================================================
-
     public static void setUpdateListener(
             Runnable listener) {
 
@@ -41,10 +36,6 @@ public class EventPlayer {
             updateListener.run();
         }
     }
-
-    // =================================================
-    // LOAD
-    // =================================================
 
     public static void load(
             List<AnimationEvent> newEvents,
@@ -64,9 +55,8 @@ public class EventPlayer {
     }
 
     // =================================================
-    // STEP FORWARD
+    // CONTROLS
     // =================================================
-
     public static void stepForward() {
 
         if (events == null || visualiser == null) {
@@ -84,10 +74,6 @@ public class EventPlayer {
         notifyUpdate();
     }
 
-    // =================================================
-    // STEP BACK
-    // =================================================
-
     public static void stepBack() {
 
         if (events == null ||
@@ -104,10 +90,6 @@ public class EventPlayer {
         notifyUpdate();
     }
 
-    // =================================================
-    // REBUILD
-    // =================================================
-
     private static void rebuild() {
 
         visualiser.reset();
@@ -118,10 +100,6 @@ public class EventPlayer {
             applyEvent(events.get(i), visualiser);
         }
     }
-
-    // =================================================
-    // PLAY
-    // =================================================
 
     public static void play() {
 
@@ -145,10 +123,6 @@ public class EventPlayer {
         timeline.play();
     }
 
-    // =================================================
-    // PLAY NEXT
-    // =================================================
-
     private static void playNext() {
 
         if (!controller.isPlaying()) {
@@ -162,10 +136,6 @@ public class EventPlayer {
 
         stepForward();
     }
-
-    // =================================================
-    // STOP
-    // =================================================
 
     public static void stop() {
 
@@ -181,7 +151,6 @@ public class EventPlayer {
     // =================================================
     // APPLY EVENT
     // =================================================
-
     private static void applyEvent(
             AnimationEvent event,
             ArrayVisualiser visualiser) {
